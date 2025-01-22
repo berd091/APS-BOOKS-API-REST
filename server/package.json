@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "json-server": "^0.17.4",
+    "jsonwebtoken": "^9.0.2"
+  }
+}
