@@ -1,11 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const EmprestimoLivro = () => {
-  const { id } = useParams();
+  const { id } = useParams(); 
+  const navigate = useNavigate(); 
   const [livro, setLivro] = useState(null);
   const [error, setError] = useState("");
+  const [dataDevolucao, setDataDevolucao] = useState("");
+
+  const calcularDataDevolucao = () => {
+    const hoje = new Date();
+    const devolucao = new Date();
+    devolucao.setDate(hoje.getDate() + 15);
+    return devolucao.toLocaleDateString("pt-BR", { timeZone: "UTC" });
+  };
 
   useEffect(() => {
     const fetchLivro = async () => {
@@ -17,6 +26,7 @@ const EmprestimoLivro = () => {
           },
         });
         setLivro(response.data);
+        setDataDevolucao(calcularDataDevolucao()); 
       } catch (err) {
         setError("Erro ao carregar os detalhes do livro.");
       }
@@ -24,6 +34,26 @@ const EmprestimoLivro = () => {
 
     fetchLivro();
   }, [id]);
+
+ 
+  const solicitarEmprestimo = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
+      await axios.post(
+        `http://localhost:3001/emprestimo/${livro.livroId}`,
+        {},
+        {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      alert("Empréstimo solicitado com sucesso!");
+      navigate("/");
+    } catch (err) {
+      setError("Erro ao solicitar o empréstimo. Tente novamente.");
+    }
+  };
 
   return (
     <div style={{ padding: "20px" }}>
@@ -35,20 +65,20 @@ const EmprestimoLivro = () => {
             <strong>Autor:</strong> {livro.autor}
           </p>
           <p>
-            <strong>Ano:</strong> 1978{/* {livro.ano} */}
+            <strong>Ano:</strong> {livro.ano}
           </p>
           <p>
-            <strong>Editora:</strong> Companhia das Letras
-            {/* {livro.editora} */}
+            <strong>Sinopse:</strong> {livro.sinopse}
           </p>
           <p>
-            <strong>Local de Coleta:</strong> Cefezes{/* {livro.biblioteca} */}
+            <strong>Local de Coleta:</strong> Cefezes
           </p>
           <p>
-            <strong>Retorno do livro:</strong> 30/01/25
-            {/* da pra botar 14 dias apos solicitação de algum jeito? */}
+            <strong>Retorno do livro:</strong> {dataDevolucao}
           </p>
-          <button>Confirmar Reserva</button>
+          <button onClick={solicitarEmprestimo} style={{ padding: "10px 20px", cursor: "pointer" }}>
+            Confirmar Reserva
+          </button>
         </div>
       ) : (
         !error && <p>Carregando...</p>

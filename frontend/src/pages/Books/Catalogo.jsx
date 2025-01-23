@@ -15,6 +15,7 @@ const Catalogo = () => {
             authorization: `Bearer ${token}`,
           },
         });
+        console.log("Livros retornados:", response.data);
         setLivros(response.data);
       } catch (err) {
         setError("Erro ao carregar os livros. Tente novamente.");
@@ -31,8 +32,8 @@ const Catalogo = () => {
       {livros.length > 0 ? (
         <ul>
           {livros.map((livro) => (
-            <li key={livro.id} style={{ marginBottom: "10px" }}>
-              <Link to={`/livros/${livro.id}`} style={{ textDecoration: "none", color: "blue" }}>
+            <li key={livro.livroId} style={{ marginBottom: "10px" }}>
+              <Link to={`/livros/${livro.livroId}`} style={{ textDecoration: "none", color: "blue" }}>
                 <strong>{livro.titulo}</strong> - {livro.autor}{" "}
                 {livro.disponivel ? "(Disponível)" : "(Indisponível)"}
               </Link>

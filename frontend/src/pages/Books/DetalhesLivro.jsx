@@ -39,10 +39,10 @@ const DetalhesLivro = () => {
             <strong>Categoria:</strong> {livro.categoria}
           </p>
           <p>
-            <strong>Ano:</strong> 1978{/* {livro.ano} */}
+            <strong>Ano:</strong> {livro.ano}
           </p>
           <p>
-            <strong>Editora:</strong> Companhia das Letras
+            <strong>Sinopse:</strong> {livro.sinopse}
             {/* {livro.editora} */}
           </p>
           <p>
@@ -50,7 +50,7 @@ const DetalhesLivro = () => {
             {livro.disponivel ? "Disponível" : "Indisponível"}
           </p>
           <Link
-            to={`/emprestimo/${livro.id}`}
+            to={`/emprestimo/${livro.livroId}`}
             style={{ textDecoration: "none", color: "blue" }}
           >
             <button>Reservar</button>
