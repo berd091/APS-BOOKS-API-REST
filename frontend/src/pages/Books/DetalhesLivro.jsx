@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const DetalhesLivro = () => {
   const { id } = useParams();
@@ -31,9 +32,29 @@ const DetalhesLivro = () => {
       {livro ? (
         <div>
           <h2>{livro.titulo}</h2>
-          <p><strong>Autor:</strong> {livro.autor}</p>
-          <p><strong>Categoria:</strong> {livro.categoria}</p>
-          <p><strong>Status:</strong> {livro.disponivel ? "Disponível" : "Indisponível"}</p>
+          <p>
+            <strong>Autor:</strong> {livro.autor}
+          </p>
+          <p>
+            <strong>Categoria:</strong> {livro.categoria}
+          </p>
+          <p>
+            <strong>Ano:</strong> 1978{/* {livro.ano} */}
+          </p>
+          <p>
+            <strong>Editora:</strong> Companhia das Letras
+            {/* {livro.editora} */}
+          </p>
+          <p>
+            <strong>Status:</strong>{" "}
+            {livro.disponivel ? "Disponível" : "Indisponível"}
+          </p>
+          <Link
+            to={`/emprestimo/${livro.id}`}
+            style={{ textDecoration: "none", color: "blue" }}
+          >
+            <button>Reservar</button>
+          </Link>
         </div>
       ) : (
         !error && <p>Carregando...</p>
