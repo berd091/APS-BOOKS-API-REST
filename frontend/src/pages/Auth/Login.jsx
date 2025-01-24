@@ -1,14 +1,45 @@
 import React, { useState } from "react";
-import axios from "axios";
+import {
+  TextField,
+  Button,
+  Container,
+  Typography,
+  Box,
+  IconButton,
+  InputAdornment,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { AccountCircle, Lock } from "@mui/icons-material";
 import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
+
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("");
+  
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") return;
+    setOpenSnackbar(false);
+  };
+
+  const showSnackbar = (message, severity) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setOpenSnackbar(true);
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   const handleSubmit = async (e) => {
@@ -20,49 +51,118 @@ const Login = () => {
       if (response.status === 200) {
         const { token } = response.data;
         localStorage.setItem("authToken", token);
-        alert("Login realizado com sucesso!");
-        navigate("/catalogo");
+        if (response.status === 201) {
+          showSnackbar("Login feito com sucesso!", "success");
+          setTimeout(() => {
+            navigate("/catalogo");
+          }, 2000);
+        }
       }
     } catch (err) {
-      setError("Email ou senha inválidos.");
+      showSnackbar("Email ou senha inválidos.", "error");
     }
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
+    <Container maxWidth="sm">
+      <Box
+        sx={{
+          mt: 4,
+          p: 4,
+          borderRadius: 2,
+          boxShadow: 3,
+          backgroundColor: "#f5f5f5",
+        }}
+      >
+        <Typography variant="h4" align="center" gutterBottom>
+          Login
+        </Typography>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            label="Email"
             name="email"
+            type="email"
             value={formData.email}
             onChange={handleChange}
+            fullWidth
+            margin="normal"
             required
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <AccountCircle />
+                </InputAdornment>
+              ),
+            }}
           />
-        </div>
-        <div>
-          <label>Senha:</label>
-          <input
-            type="password"
+          <TextField
+            label="Senha"
             name="password"
+            type={showPassword ? "text" : "password"}
             value={formData.password}
             onChange={handleChange}
+            fullWidth
+            margin="normal"
             required
+            inputProps={{
+              onPaste: (e) => {
+                e.preventDefault();
+              },
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Lock />
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={togglePasswordVisibility} edge="end">
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
-        </div>
-        <button type="submit">Entrar</button>
-      </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      <p style={{ marginTop: "20px" }}>
-        Não tem cadastro?{" "}
-        <Link to="/cadastro" style={{ color: "blue", textDecoration: "underline" }}>
-          Cadastre-se agora!
-        </Link>
-      </p>
-    </div>
+          {error && (
+            <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+              {error}
+            </Typography>
+          )}
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ mt: 3 }}
+          >
+            Entrar
+          </Button>
+        </form>
+        <Typography variant="body2" align="center" sx={{ mt: 3 }}>
+          Não tem cadastro?{" "}
+          <Link to="/cadastro" style={{ textDecoration: "none", color: "#1976d2" }}>
+            Cadastre-se agora!
+          </Link>
+        </Typography>
+      </Box>
+      <Snackbar
+          open={openSnackbar}
+          autoHideDuration={2000}
+          onClose={handleCloseSnackbar}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
+          <MuiAlert
+            onClose={handleCloseSnackbar}
+            severity={snackbarSeverity}
+            sx={{ width: "100%" }}
+            elevation={6}
+            variant="filled"
+          >
+            {snackbarMessage}
+          </MuiAlert>
+        </Snackbar>
+    </Container>
   );
 };
 

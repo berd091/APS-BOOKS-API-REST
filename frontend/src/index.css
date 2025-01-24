@@ -1,26 +1,150 @@
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f9;
   margin: 0;
-  padding: 0;
+  font-family: "Istok Web", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-div {
-  max-width: 400px;
-  margin: 50px auto;
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+code {
+  font-family: "Istok Web", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
-input, button {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+.css-399uk9-MuiTypography-root {
+  font-family: "Istok Web", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
+
+p {
+  font-family: "Istok Web", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+h1 {
+  font-family: "Istok Web", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+h2 {
+  font-family: "Istok Web", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.css-2jwgoa-MuiFormControlLabel-root .MuiFormControlLabel-label {
+  font-family: "Istok Web", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.css-154xyx0-MuiInputBase-root-MuiOutlinedInput-root {
+  font-family: "Istok Web", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.css-10hburv-MuiTypography-root {
+  font-family: "Istok Web", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.css-1h9z7r5-MuiButtonBase-root-MuiTab-root {
+  font-family: "Istok Web", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.css-1e6i5-MuiButtonBase-root-MuiButton-root {
+  font-family: "Istok Web", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.css-opa81y-MuiTypography-root {
+  font-family: "Istok Web", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+form {
+  font-family: "Istok Web", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+button {
+  font-family: "Istok Web", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.MuiButtonBase-root {
+  font-family: "Istok Web", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.MuiTypography-root {
+  font-family: "Istok Web", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.MuiInputBase-input {
+  font-family: "Istok Web", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.MuiAutocomplete-root {
+  font-family: "Istok Web", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.MuiDataGrid-root {
+  font-family: "Istok Web", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.MuiFormControl-root {
+  font-family: "Istok Web", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.MuiFormLabel-root {
+  font-family: "Istok Web", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.MuiInputBase-input {
+  font-family: "Istok Web", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.MuiInputBase-root {
+  font-family: "Istok Web", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.css-9e5uuu-MuiPaper-root-MuiAutocomplete-paper {
+  font-family: "Istok Web", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.MuiBox-root {
+  background-color: rgb(238, 238, 238);
+
+  .css-140iwlb {
+    background-color: #ff0000;
+  }
+
+  .css-1r1pfwt {
+    background-color: rgba(41, 87, 164, 0.85);
+  }
+
+  .css-4df3l {
+    background-color: #ffffff;
+  }
+}
+
+.css-qjoko6-MuiPaper-root-MuiAppBar-root {
+  background-color: rgb(238, 238, 238);
+}
+
+.css-1wvraal-MuiButtonBase-root-MuiButton-root {
+  font-size: small;
+}
+
 
 button {
   background-color: #007bff;

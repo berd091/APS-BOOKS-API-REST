@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
-const Usuario = require('./models/Usuario'); 
+const Usuario = require('./models/Usuario');
 const Emprestimo = require('./models/Emprestimos');
 const Livro = require('./models/Livros');
 const app = express();
@@ -80,7 +80,7 @@ const verifyToken = (req, res, next) => {
 //permissão de admin
 app.get("/role", verifyToken, async (req, res) => {
   try {
-    const usuario = await Usuario.findById(req.usuario.id); 
+    const usuario = await Usuario.findById(req.usuario.id);
     if (!usuario) {
       return res.status(404).json({ message: "Usuário não encontrado" });
     }
@@ -110,8 +110,11 @@ app.post('/usuarios', async (req, res) => {
     const savedUsuario = await newUsuario.save();
     res.status(201).json(savedUsuario);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Erro ao cadastrar usuário' });
+    if (error.code === 11000) {
+      res.status(400).send({ code: 11000, message: "Email já cadastrado" });
+    } else {
+      res.status(500).json({ message: 'Erro ao cadastrar usuário' });
+    }
   }
 });
 
@@ -276,7 +279,7 @@ app.post('/livros', verifyToken, async (req, res) => {
   }
 
   try {
-    const novoLivro = new Livro({...req.body, livroId: uuidv4(), disponivel: true });
+    const novoLivro = new Livro({ ...req.body, livroId: uuidv4(), disponivel: true });
     await novoLivro.save();
 
     res.status(201).json(novoLivro);

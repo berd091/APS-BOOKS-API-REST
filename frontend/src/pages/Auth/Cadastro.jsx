@@ -1,69 +1,190 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { TextField, Button, Container, Typography, Box, IconButton, InputAdornment } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 const Cadastro = () => {
-  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
   const [error, setError] = useState("");
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") return;
+    setOpenSnackbar(false);
+  };
+
+  const showSnackbar = (message, severity) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setOpenSnackbar(true);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    try {
-      const response = await axios.post("http://localhost:3001/usuarios", formData);
-      if (response.status === 201) {
-        alert("Usuário cadastrado com sucesso!");
-        navigate("/");
-      }
-    } catch (err) {
-      setError("Erro ao cadastrar usuário. Tente novamente.");
+    if (formData.password !== formData.confirmPassword) {
+      setError("As senhas não correspondem.");
+      return;
     }
-  };
+
+    try {
+      const response = await axios.post("http://localhost:3001/usuarios", {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      });
+      if (response.status === 201) {
+        showSnackbar("Usuário cadastrado com sucesso!", "success");
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
+      }
+      
+    } catch (err) {
+      if (err.response && err.response.data.code === 11000) {
+        showSnackbar("Este email já está cadastrado.", "error");
+      } else {
+        showSnackbar("Erro ao cadastrar usuário. Tente novamente.", "error");
+      }
+    }};
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Cadastro</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Nome:</label>
-          <input
-            type="text"
+    <Container maxWidth="sm">
+      <Box
+        sx={{
+          mt: 4,
+          p: 4,
+          borderRadius: 2,
+          boxShadow: 3,
+          backgroundColor: "#f5f5f5",
+        }}
+      >
+        <Typography variant="h4" align="center" gutterBottom>
+          Cadastro
+        </Typography>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            label="Nome"
             name="name"
             value={formData.name}
             onChange={handleChange}
+            fullWidth
+            margin="normal"
             required
           />
-        </div>
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
+          <TextField
+            label="Email"
             name="email"
+            type="email"
             value={formData.email}
             onChange={handleChange}
+            fullWidth
+            margin="normal"
             required
           />
-        </div>
-        <div>
-          <label>Senha:</label>
-          <input
-            type="password"
+          <TextField
+            label="Senha"
             name="password"
+            type={showPassword ? "text" : "password"}
             value={formData.password}
             onChange={handleChange}
+            fullWidth
+            margin="normal"
             required
+            inputProps={{
+              onPaste: (e) => {
+                e.preventDefault();
+              },
+            }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={togglePasswordVisibility} edge="end">
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
-        </div>
-        <button type="submit">Cadastrar</button>
-      </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-    </div>
+          <TextField
+            label="Confirmar Senha"
+            name="confirmPassword"
+            type={showPassword ? "text" : "password"}
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+            required
+            inputProps={{
+              onPaste: (e) => {
+                e.preventDefault();
+              },
+            }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={togglePasswordVisibility} edge="end">
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          {error && (
+            <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+              {error}
+            </Typography>
+          )}
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ mt: 3 }}
+          >
+            Cadastrar
+          </Button>
+        </form>
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={2000}
+          onClose={handleCloseSnackbar}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
+          <MuiAlert
+            onClose={handleCloseSnackbar}
+            severity={snackbarSeverity}
+            sx={{ width: "100%" }}
+            elevation={6}
+            variant="filled"
+          >
+            {snackbarMessage}
+          </MuiAlert>
+        </Snackbar>
+      </Box>
+      
+    </Container>
   );
 };
 
