@@ -12,6 +12,8 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { AccountCircle, Lock } from "@mui/icons-material";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 
 const Login = () => {
@@ -51,12 +53,10 @@ const Login = () => {
       if (response.status === 200) {
         const { token } = response.data;
         localStorage.setItem("authToken", token);
-        if (response.status === 201) {
-          showSnackbar("Login feito com sucesso!", "success");
-          setTimeout(() => {
+        showSnackbar("Login feito com sucesso!", "success");
+        setTimeout(() => {
             navigate("/catalogo");
-          }, 2000);
-        }
+        }, 2000);
       }
     } catch (err) {
       showSnackbar("Email ou senha inválidos.", "error");

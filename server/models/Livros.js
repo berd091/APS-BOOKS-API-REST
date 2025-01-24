@@ -8,6 +8,7 @@ const LivroSchema = new mongoose.Schema({
   categoria: { type: String, required: true },
   ano: { type: Number, required: true },
   disponivel: { type: Boolean, required: true, default: true },
+  imageUrl: { type: String },
 });
 
 module.exports = mongoose.model('Livros', LivroSchema);

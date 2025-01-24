@@ -49,7 +49,7 @@ const EmprestimoLivro = () => {
         }
       );
       alert("Empréstimo solicitado com sucesso!");
-      navigate("/");
+      navigate("/catalogo");
     } catch (err) {
       setError("Erro ao solicitar o empréstimo. Tente novamente.");
     }

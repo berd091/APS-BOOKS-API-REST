@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import {
+  Container,
+  TextField,
+  Button,
+  Typography,
+  Box,
+  MenuItem,
+  CircularProgress,
+} from "@mui/material";
+import { MdAddCircle } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
 const AddLivro = () => {
@@ -7,8 +17,10 @@ const AddLivro = () => {
   const [autor, setAutor] = useState("");
   const [categoria, setCategoria] = useState("");
   const [ano, setAno] = useState("");
-  const [sinopse, setSinopse] = useState(""); // Adicionado o estado para sinopse
+  const [sinopse, setSinopse] = useState("");
   const [mensagem, setMensagem] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [sugestoes, setSugestoes] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,7 +35,7 @@ const AddLivro = () => {
 
         if (response.data.role !== "admin") {
           alert("Acesso restrito! Apenas bibliotecários podem acessar esta página.");
-          navigate("/"); 
+          navigate("/");
         }
       } catch (error) {
         console.error("Erro ao verificar permissões:", error);
@@ -33,6 +45,44 @@ const AddLivro = () => {
 
     verificarPermissao();
   }, [navigate]);
+
+  const buscarSugestoes = async (titulo) => {
+    if (!titulo) {
+      setSugestoes([]);
+      return;
+    }
+  
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `https://www.googleapis.com/books/v1/volumes?q=${titulo}`
+      );
+      const livros = response.data.items?.slice(0, 5) || []; 
+      setSugestoes(
+        livros.map((livro) => ({
+          titulo: livro.volumeInfo.title,
+          autor: livro.volumeInfo.authors?.[0] || "",
+          ano: livro.volumeInfo.publishedDate?.split("-")[0] || "",
+          categoria: livro.volumeInfo.categories?.[0] || "",
+          sinopse: livro.volumeInfo.description || "",
+        }))
+      );
+    } catch (error) {
+      console.error("Erro ao buscar sugestões:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
+  const preencherCampos = (sugestao) => {
+    setTitulo(sugestao.titulo);
+    setAutor(sugestao.autor);
+    setAno(sugestao.ano);
+    setCategoria(sugestao.categoria);
+    setSinopse(sugestao.sinopse);
+  };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,7 +96,7 @@ const AddLivro = () => {
         autor,
         categoria,
         ano: parseInt(ano, 10),
-        sinopse, // Incluído no objeto enviado ao backend
+        sinopse,
       };
 
       await axios.post("http://localhost:3001/livros", novoLivro, {
@@ -61,7 +111,7 @@ const AddLivro = () => {
       setAutor("");
       setCategoria("");
       setAno("");
-      setSinopse(""); // Limpar o campo sinopse
+      setSinopse("");
     } catch (error) {
       console.error("Erro ao adicionar livro:", error);
       setMensagem("Erro ao adicionar o livro. Tente novamente.");
@@ -69,64 +119,101 @@ const AddLivro = () => {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Adicionar Novo Livro</h2>
-      {mensagem && <p style={{ color: mensagem.includes("sucesso") ? "green" : "red" }}>{mensagem}</p>}
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Título:</label>
-          <input
-            type="text"
+    <Container maxWidth="sm">
+      <Box
+        sx={{
+          mt: 4,
+          p: 4,
+          borderRadius: 2,
+          boxShadow: 3,
+          backgroundColor: "#f5f5f5",
+        }}
+      >
+        <Typography variant="h4" align="center" gutterBottom>
+          <MdAddCircle style={{ color: "blue", marginRight: "10px" }} />
+          Adicionar Novo Livro
+        </Typography>
+        {mensagem && (
+          <Typography
+            color={mensagem.includes("sucesso") ? "green" : "red"}
+            variant="body2"
+            sx={{ mt: 1 }}
+          >
+            {mensagem}
+          </Typography>
+        )}
+        <form onSubmit={handleSubmit}>
+          <TextField
+            label="Título"
             value={titulo}
-            onChange={(e) => setTitulo(e.target.value)}
+            onChange={(e) => {
+              setTitulo(e.target.value);
+              buscarSugestoes(e.target.value);
+            }}
+            fullWidth
+            margin="normal"
             required
-            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
           />
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Autor:</label>
-          <input
-            type="text"
+          {loading && <CircularProgress size={24} sx={{ mt: 1, mb: 2 }} />}
+          {sugestoes.length > 0 && (
+            <Box sx={{ mt: 1, mb: 2 }}>
+              {sugestoes.map((sugestao, index) => (
+                <MenuItem
+                  key={index}
+                  onClick={() => preencherCampos(sugestao)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {sugestao.titulo} - {sugestao.autor}
+                </MenuItem>
+              ))}
+            </Box>
+          )}
+          <TextField
+            label="Autor"
             value={autor}
             onChange={(e) => setAutor(e.target.value)}
+            fullWidth
+            margin="normal"
             required
-            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
           />
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Categoria:</label>
-          <input
-            type="text"
+          <TextField
+            label="Categoria"
             value={categoria}
             onChange={(e) => setCategoria(e.target.value)}
+            fullWidth
+            margin="normal"
             required
-            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
           />
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Ano:</label>
-          <input
+          <TextField
+            label="Ano"
             type="number"
             value={ano}
             onChange={(e) => setAno(e.target.value)}
+            fullWidth
+            margin="normal"
             required
-            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
           />
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Sinopse:</label>
-          <textarea
+          <TextField
+            label="Sinopse"
             value={sinopse}
             onChange={(e) => setSinopse(e.target.value)}
-            required
-            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
-          ></textarea>
-        </div>
-        <button type="submit" style={{ padding: "10px 15px", backgroundColor: "blue", color: "white", border: "none", cursor: "pointer" }}>
-          Adicionar Livro
-        </button>
-      </form>
-    </div>
+            multiline
+            rows={4}
+            fullWidth
+            margin="normal"
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ mt: 3 }}
+          >
+            Adicionar Livro
+          </Button>
+        </form>
+      </Box>
+    </Container>
   );
 };
 

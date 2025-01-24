@@ -289,6 +289,35 @@ app.post('/livros', verifyToken, async (req, res) => {
   }
 });
 
+// Adicionar capa
+app.patch('/livros/:livroId', verifyToken, async (req, res) => {
+  if (req.usuario.role !== 'admin') {
+    return res.status(403).json({ message: 'Acesso restrito para administradores' });
+  }
+
+  const livroId = req.params.livroId;
+  const atualizacoes = req.body; 
+
+  try {
+    
+    const livroAtualizado = await Livro.findOneAndUpdate(
+      { livroId },
+      atualizacoes,
+      { new: true } 
+    );
+
+    if (!livroAtualizado) {
+      return res.status(404).json({ message: 'Livro não encontrado' });
+    }
+
+    res.json({ message: 'Livro atualizado com sucesso', livro: livroAtualizado });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao atualizar livro' });
+  }
+});
+
+
 
 //deletar livro
 app.delete('/livros/:livroId', verifyToken, async (req, res) => {
