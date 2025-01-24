@@ -12,7 +12,7 @@ import {
   Container,
   CardMedia,
 } from "@mui/material";
-import { LibraryBooks, Event, Category, Person } from "@mui/icons-material";
+import { Event, Category, Person } from "@mui/icons-material";
 import { BsBookHalf } from "react-icons/bs";
 import { MdOutlinePendingActions } from "react-icons/md";
 
@@ -20,7 +20,7 @@ const DetalhesLivro = () => {
   const { id } = useParams();
   const [livro, setLivro] = useState(null);
   const [error, setError] = useState("");
-  const [imagemCapa, setImagemCapa] = useState(""); // Estado para armazenar a imagem da capa
+  const [imagemCapa, setImagemCapa] = useState("");
 
   useEffect(() => {
     const fetchLivro = async () => {
@@ -32,10 +32,8 @@ const DetalhesLivro = () => {
           },
         });
 
-        // Pega os dados do livro
         const livroData = response.data;
 
-        // Buscar a capa do livro usando o Google Books API
         const googleResponse = await axios.get(
           `https://www.googleapis.com/books/v1/volumes?q=intitle:${livroData.titulo}`
         );
@@ -43,7 +41,6 @@ const DetalhesLivro = () => {
         const image =
           googleResponse.data.items?.[0]?.volumeInfo?.imageLinks?.thumbnail || "";
 
-        // Atualiza o estado com os dados do livro e a imagem da capa
         setLivro(livroData);
         setImagemCapa(image);
       } catch (err) {

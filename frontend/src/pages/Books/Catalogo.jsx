@@ -189,6 +189,7 @@ const Catalogo = () => {
                     size="small"
                     color="primary"
                     component={Link}
+                    sx={{cursor: "pointer"}}
                     to={`/livros/${livro.livroId}`}
                   >
                     Ver Detalhes
