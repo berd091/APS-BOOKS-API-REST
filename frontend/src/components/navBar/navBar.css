@@ -1,0 +1,338 @@
+.navbar-container {
+  width: 100%;
+}
+.navBarHeader {
+  height: 75%;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  justify-items: center;
+  align-items: center;
+  background-color: #eee9e4;
+  position: relative;
+  z-index: 100;
+}
+
+.imagemenu {
+  height: 4vh;
+  width: 4vh;
+}
+.imagelogo {
+  height: 12vh;
+  width: 17vh;
+}
+.imageuser {
+  height: 6vh;
+  width: 6vh;
+  cursor: pointer;
+}
+.imagelupa {
+  height: 3vh;
+  width: 3vh;
+}
+.menuHamButton {
+  border: none;
+  background-color: #eee9e4;
+}
+
+.menuHamButton:hover {
+  cursor: pointer;
+}
+a {
+  text-decoration: none;
+}
+.menu {
+  z-index: 99;
+  height: 100vh;
+  width: 30vw;
+  background-color: #eee9e4;
+  position: fixed;
+  top: 0;
+}
+@keyframes slideIn {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.menuAberto {
+  animation: slideIn 0.5s ease forwards;
+}
+.botoesDiv {
+  display: flex;
+  flex-direction: column;
+  margin-top: 15vh;
+}
+.botoesDiv button {
+  transition: #eee9e4 0.3s ease;
+  cursor: pointer;
+}
+.botoesDiv button:hover {
+  background-color: #575757; /* Efeito ao passar o mouse */
+  transition: background-color 0.6s ease;
+}
+.botao1 {
+  height: 5vh;
+  border: none;
+  position: relative;
+  margin-top: 3vh;
+  margin-bottom: 5vh;
+  background-color: #eee9e4;
+  color: #acacac;
+  text-decoration: none;
+}
+.botao1 a {
+  width: 100%;
+  display: inline-block;
+}
+.botao1::before {
+  content: "";
+  display: flex;
+  position: absolute;
+  background-color: #fffbf6;
+  left: 0vw;
+  width: 30vw;
+  height: 0.2vh;
+  top: -0.3vh;
+}
+.botao1::after {
+  content: "";
+  display: flex;
+  position: absolute;
+  background-color: #fffbf6;
+  left: 0vw;
+  width: 30vw;
+  height: 0.2vh;
+  top: 4.5vh;
+}
+.botao2 {
+  height: 5vh;
+  margin-bottom: 5vh;
+  position: relative;
+  border: none;
+  background-color: #eee9e4;
+  color: #acacac;
+  text-decoration: none;
+}
+.botao2 a {
+  width: 100%;
+  display: inline-block;
+}
+.botao2::before {
+  content: "";
+  display: flex;
+  position: absolute;
+  background-color: #fffbf6;
+  left: 0vw;
+  width: 30vw;
+  height: 0.2vh;
+  top: -0.3vh;
+}
+
+.botao2::after {
+  content: "";
+  display: flex;
+  position: absolute;
+  background-color: #fffbf6;
+  left: 0vw;
+  width: 30vw;
+  height: 0.2vh;
+  top: 4.5vh;
+}
+.botao3 {
+  border: none;
+  height: 5vh;
+  position: relative;
+  margin-bottom: 5vh;
+  background-color: #eee9e4;
+  color: #acacac;
+  width: 100%;
+}
+
+.botao3::before {
+  content: "";
+  display: flex;
+  position: absolute;
+  background-color: #fffbf6;
+  left: 0vw;
+  width: 30vw;
+  height: 0.2vh;
+  top: -0.3vh;
+}
+.botao3::after {
+  content: "";
+  display: flex;
+  position: absolute;
+  background-color: #fffbf6;
+  left: 0vw;
+  width: 30vw;
+  height: 0.2vh;
+  top: 4.5vh;
+}
+.botao3:hover {
+  background-color: #575757; /* Efeito ao passar o mouse */
+}
+.botao4 {
+  border: none;
+  height: 5vh;
+  margin-bottom: 5vh;
+  position: relative;
+  background-color: #eee9e4;
+  color: #acacac;
+  width: 100%;
+}
+.botao4::before {
+  content: "";
+  display: flex;
+  position: absolute;
+  background-color: #fffbf6;
+  left: 0vw;
+  width: 30vw;
+  height: 0.2vh;
+  top: -0.3vh;
+}
+.botao4::after {
+  content: "";
+  display: flex;
+  position: absolute;
+  background-color: #fffbf6;
+  left: 0vw;
+  width: 30vw;
+  height: 0.2vh;
+  top: 4.5vh;
+}
+.botao5 {
+  border: none;
+  height: 5vh;
+  position: relative;
+  background-color: #eee9e4;
+  color: #acacac;
+  width: 100%;
+}
+.botao5::before {
+  content: "";
+  display: flex;
+  position: absolute;
+  background-color: #fffbf6;
+  left: 0vw;
+  width: 30vw;
+  height: 0.2vh;
+  top: -0.3vh;
+}
+.botao5::after {
+  content: "";
+  display: flex;
+  position: absolute;
+  background-color: #fffbf6;
+  left: 0vw;
+  width: 30vw;
+  height: 0.2vh;
+  top: 4.5vh;
+}
+.logout {
+  height: 5vh;
+  position: absolute;
+  background-color: #eee9e4;
+  color: #acacac;
+  bottom: 20vh;
+  width: 30vw;
+  left: 0;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.logout:hover {
+  background-color: #fffbf6;
+}
+.logout::before {
+  content: "";
+  display: flex;
+  position: absolute;
+  background-color: #fffbf6;
+  left: 0vw;
+  width: 30vw;
+  height: 0.2vh;
+  top: -0.3vh;
+}
+.logout::after {
+  content: "";
+  display: flex;
+  position: absolute;
+  background-color: #fffbf6;
+  left: 0vw;
+  width: 30vw;
+  height: 0.2vh;
+  top: 4.5vh;
+}
+
+a {
+  text-decoration: none;
+}
+a:visited {
+  color: inherit;
+}
+
+@media (min-width: 769px) {
+  .menu {
+    width: 14.5rem;
+    background-color: #eee9e4;
+  }
+  .botao1 {
+    width: 14.5rem;
+  }
+  .botao1::before {
+    width: 14.5rem;
+  }
+  .botao1::after {
+    width: 14.5rem;
+  }
+  .botao2 {
+    width: 14.5rem;
+  }
+  .botao2::before {
+    width: 14.5rem;
+  }
+
+  .botao2::after {
+    width: 14.5rem;
+  }
+  .botao3 {
+    width: 14.5rem;
+  }
+  .botao3::before {
+    width: 14.5rem;
+  }
+  .botao3::after {
+    width: 14.5rem;
+  }
+  .botao4 {
+    width: 14.5rem;
+  }
+  .botao4::before {
+    width: 14.5rem;
+  }
+  .botao4::after {
+    width: 14.5rem;
+  }
+  .botao5 {
+    width: 14.5rem;
+  }
+  .botao5::before {
+    width: 14.5rem;
+  }
+  .botao5::after {
+    width: 14.5rem;
+  }
+  .logout {
+    width: 14.5rem;
+  }
+  .logout::before {
+    width: 14.5rem;
+  }
+  .logout::after {
+    width: 14.5rem;
+  }
+}
