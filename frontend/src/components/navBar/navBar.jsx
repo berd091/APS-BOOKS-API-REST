@@ -38,13 +38,19 @@ function NavBar() {
           <div className="menu menuAberto">
             <div className="botoesDiv">
               <button className="botao1">
-                <p>Adicionar Livros</p>
+                <Link to="/admin" style={{ textDecoration: "none" }}>
+                  Adicionar Livros
+                </Link>
               </button>
               <button className="botao2">
-                <p>Remover Livros</p>
+                <Link to="/admin2" style={{ textDecoration: "none" }}>
+                  Remover Livros
+                </Link>
               </button>
               <button className="botao3">
-                <p>balalalika</p>
+                <Link to="/catalogo" style={{ textDecoration: "none" }}>
+                  Catálogo
+                </Link>
               </button>
             </div>
           </div>
