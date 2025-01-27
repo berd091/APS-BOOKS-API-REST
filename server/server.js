@@ -19,12 +19,21 @@ const PORT = process.env.PORT || 3001;
 const JWT_SECRET = process.env.JWT_SECRET;
 const MONGO_URI = process.env.MONGO_URI;
 
-mongoose
-  .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("Conectado ao MongoDB"))
-  .catch((err) => console.error("Erro ao conectar ao MongoDB:", err));
+// mongo singleton
+class MongoDB {
+  static connection;
 
-// Função para autenticar usuário
+  static async connect(uri) {
+    if (!MongoDB.connection) {
+      MongoDB.connection = mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    }
+    return MongoDB.connection;
+    
+  }
+}
+
+MongoDB.connect(MONGO_URI).catch((err) => console.error("Erro ao conectar ao MongoDB:", err));
+
 const autenticarUsuario = async (email, password) => {
   const usuario = await Usuario.findOne({ email });
   if (usuario) {
@@ -38,6 +47,7 @@ const autenticarUsuario = async (email, password) => {
   }
   return null;
 };
+
 //login
 app.post("/auth/login", async (req, res) => {
   const { email, password } = req.body;
@@ -313,6 +323,7 @@ app.post("/emprestimos/return/:id", verifyToken, async (req, res) => {
     }
 
     emprestimo.status = "devolvido";
+    emprestimo.dataDevolucao = new Date();
     await emprestimo.save();
 
     const livro = await Livro.findOne({ livroId: emprestimo.livroId });
@@ -382,38 +393,6 @@ app.post("/livros", verifyToken, async (req, res) => {
   }
 });
 
-// Adicionar capa
-app.patch("/livros/:livroId", verifyToken, async (req, res) => {
-  if (req.usuario.role !== "admin") {
-    return res
-      .status(403)
-      .json({ message: "Acesso restrito para administradores" });
-  }
-
-  const livroId = req.params.livroId;
-  const atualizacoes = req.body;
-
-  try {
-    const livroAtualizado = await Livro.findOneAndUpdate(
-      { livroId },
-      atualizacoes,
-      { new: true }
-    );
-
-    if (!livroAtualizado) {
-      return res.status(404).json({ message: "Livro não encontrado" });
-    }
-
-    res.json({
-      message: "Livro atualizado com sucesso",
-      livro: livroAtualizado,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Erro ao atualizar livro" });
-  }
-});
-
 //deletar livro
 app.delete("/livros/:livroId", verifyToken, async (req, res) => {
   if (req.usuario.role !== "admin") {
@@ -425,11 +404,24 @@ app.delete("/livros/:livroId", verifyToken, async (req, res) => {
   const livroId = req.params.livroId;
 
   try {
-    await Livro.findOneAndDelete({ livroId });
+    const emprestimosDeletados = await Emprestimo.deleteMany({ livroId });
+
+    if (emprestimosDeletados.deletedCount === 0) {
+      console.log("Nenhum empréstimo associado encontrado.");
+    } else {
+      console.log(`${emprestimosDeletados.deletedCount} empréstimos deletados.`);
+    }
+
+    const livroDeletado = await Livro.findOneAndDelete({ livroId });
+
+    if (!livroDeletado) {
+      return res.status(404).json({ message: "Livro não encontrado" });
+    }
+
     res.status(204).end();
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Erro ao deletar livro" });
+    res.status(500).json({ message: "Erro ao deletar livro e/ou empréstimos" });
   }
 });
 
@@ -459,34 +451,6 @@ app.post("/usuarios/admin", verifyToken, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Erro ao adicionar bibliotecário" });
-  }
-});
-
-//registrar emprestimo
-app.put("/emprestimos/status/:id", verifyToken, async (req, res) => {
-  if (req.usuario.role !== "admin") {
-    return res
-      .status(403)
-      .json({ message: "Acesso restrito para administradores" });
-  }
-
-  const emprestimoId = req.params.id;
-  const { status } = req.body;
-
-  try {
-    const emprestimo = await Emprestimo.findById(emprestimoId);
-
-    if (!emprestimo) {
-      return res.status(404).json({ message: "Empréstimo não encontrado" });
-    }
-
-    emprestimo.status = status || emprestimo.status;
-    await emprestimo.save();
-
-    res.json(emprestimo);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Erro ao atualizar status do empréstimo" });
   }
 });
 

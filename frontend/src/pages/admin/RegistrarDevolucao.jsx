@@ -132,9 +132,15 @@ const RegistrarDevolucao = () => {
                   <Typography variant="subtitle1">
                     <strong>Data do Empréstimo:</strong> {new Date(emprestimo.dataEmprestimo).toLocaleDateString()}
                   </Typography>
+                  {emprestimo.status !== "devolvido" ? (
                   <Typography variant="subtitle1">
                     <strong>Prazo de Devolução:</strong> {new Date(emprestimo.dataDevolucao).toLocaleDateString()}
                   </Typography>
+                  ) : (
+                  <Typography variant="subtitle1">
+                    <strong>Data de Devolução:</strong> {new Date(emprestimo.dataDevolucao).toLocaleDateString()}
+                  </Typography>)}
+
                   <Typography variant="subtitle1">
                     <strong>Status:</strong> {emprestimo.status}
                   </Typography>

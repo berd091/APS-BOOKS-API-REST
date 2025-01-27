@@ -92,9 +92,6 @@ const Catalogo = () => {
       <NavBar />
 
       <Container sx={{ py: 4 }}>
-        <Typography variant="h3" align="center" gutterBottom>
-          Catálogo de Livros
-        </Typography>
         {error && (
           <Typography color="error" align="center" sx={{ mb: 4 }}>
             {error}

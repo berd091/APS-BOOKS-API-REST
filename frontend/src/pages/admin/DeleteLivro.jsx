@@ -53,7 +53,25 @@ const DeleteLivro = () => {
             authorization: `Bearer ${token}`,
           },
         });
-        setLivros(response.data);
+
+        const livrosComImagens = await Promise.all(
+          response.data.map(async (livro) => {
+            try {
+              const googleResponse = await axios.get(
+                `https://www.googleapis.com/books/v1/volumes?q=intitle:${livro.titulo}`
+              );
+
+              const image =
+                googleResponse.data.items?.[0]?.volumeInfo?.imageLinks
+                  ?.thumbnail || "";
+              return { ...livro, image };
+            } catch {
+              return { ...livro, image: "" };
+            }
+          })
+        );
+
+        setLivros(livrosComImagens);
       } catch (error) {
         console.error("Erro ao buscar livros:", error);
         setMensagem("Erro ao carregar os livros. Tente novamente.");

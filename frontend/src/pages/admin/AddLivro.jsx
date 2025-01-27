@@ -49,18 +49,21 @@ const AddLivro = () => {
     verificarPermissao();
   }, [navigate]);
 
-  const buscarSugestoes = async (titulo) => {
-    if (!titulo) {
+  const buscarSugestoes = async () => {
+    if (!titulo && !autor) {
       setSugestoes([]);
       return;
     }
 
     setLoading(true);
     try {
+      const query = `${titulo ? `intitle:${titulo}` : ""}${
+        autor ? `+inauthor:${autor}` : ""
+      }`;
       const response = await axios.get(
-        `https://www.googleapis.com/books/v1/volumes?q=${titulo}`
+        `https://www.googleapis.com/books/v1/volumes?q=${query}&langRestrict=pt`
       );
-      const livros = response.data.items?.slice(0, 5) || [];
+      const livros = response.data.items || [];
       setSugestoes(
         livros.map((livro) => ({
           titulo: livro.volumeInfo.title,
@@ -151,7 +154,7 @@ const AddLivro = () => {
               value={titulo}
               onChange={(e) => {
                 setTitulo(e.target.value);
-                buscarSugestoes(e.target.value);
+                buscarSugestoes();
               }}
               fullWidth
               margin="normal"
@@ -159,7 +162,7 @@ const AddLivro = () => {
             />
             {loading && <CircularProgress size={24} sx={{ mt: 1, mb: 2 }} />}
             {sugestoes.length > 0 && (
-              <Box sx={{ mt: 1, mb: 2 }}>
+              <Box sx={{ mt: 1, mb: 2, maxHeight: "300px", overflowY: "auto" }}>
                 {sugestoes.map((sugestao, index) => (
                   <MenuItem
                     key={index}
@@ -174,7 +177,10 @@ const AddLivro = () => {
             <TextField
               label="Autor"
               value={autor}
-              onChange={(e) => setAutor(e.target.value)}
+              onChange={(e) => {
+                setAutor(e.target.value);
+                buscarSugestoes();
+              }}
               fullWidth
               margin="normal"
               required

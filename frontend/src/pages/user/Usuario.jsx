@@ -10,6 +10,7 @@ import {
   Box,
   CardMedia,
   Button,
+  Snackbar
 } from "@mui/material";
 import NavBar from "../../components/navBar/navBar";
 
@@ -33,33 +34,22 @@ const getMensagemDevolucao = (dataDevolucao) => {
 const HistoricoEmprestimos = () => {
   const [emprestimos, setEmprestimos] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const fetchBookCover = async (titulo) => {
     try {
-      const response = await axios.get(
-        "https://www.googleapis.com/customsearch/v1",
-        {
-          params: {
-            key: "AIzaSyCHtiaMFIZqa0AP_ps2T-P-vD2SC5MA6O8",
-            cx: "44c5ec16575214cc3",
-            q: `${titulo} livro`,
-            searchType: "image",
-            num: 1,
-          },
-        }
+      const googleResponse = await axios.get(
+        `https://www.googleapis.com/books/v1/volumes?q=intitle:${titulo}`
       );
-      return response.data.items?.[0]?.link || null;
-    } catch (error) {
-      console.error(
-        `Erro ao buscar capa para o livro "${titulo}":`,
-        error.message
-      );
-      return null;
+      return googleResponse.data.items?.[0]?.volumeInfo?.imageLinks?.thumbnail || "";
+    } catch {
+      return "";
     }
   };
-
   const handleExtendLoan = async (emprestimoId) => {
+    setErrorMessage("");
+    setSuccessMessage("");
     try {
       const token = localStorage.getItem("authToken");
       if (!token) {
@@ -82,15 +72,17 @@ const HistoricoEmprestimos = () => {
           : emprestimo
       );
       setEmprestimos(updatedEmprestimos);
-      alert("Prazo de devolução estendido com sucesso!");
+      setSuccessMessage("Prazo de devolução estendido com sucesso!");
     } catch (error) {
       console.error(error.message || error);
-      alert("Erro ao estender prazo de devolução. Tente novamente.");
+      setErrorMessage("Erro ao estender prazo de devolução. Tente novamente.");
     }
   };
 
   useEffect(() => {
     const fetchEmprestimos = async () => {
+      setErrorMessage("");
+      setSuccessMessage("");
       setLoading(true);
       try {
         const token = localStorage.getItem("authToken");
@@ -119,7 +111,7 @@ const HistoricoEmprestimos = () => {
         setEmprestimos(emprestimosComCapas);
       } catch (err) {
         console.error(err.message || err);
-        setError("Erro ao carregar os empréstimos. Tente novamente.");
+        setErrorMessage("Erro ao carregar os empréstimos. Tente novamente.");
       } finally {
         setLoading(false);
       }
@@ -148,9 +140,9 @@ const HistoricoEmprestimos = () => {
         <Typography variant="h3" align="center" gutterBottom>
           Histórico de Empréstimos
         </Typography>
-        {error && (
+        {errorMessage && (
           <Typography color="error" align="center" sx={{ mb: 4 }}>
-            {error}
+            {errorMessage}
           </Typography>
         )}
         {loading ? (
@@ -219,19 +211,28 @@ const HistoricoEmprestimos = () => {
                         Data de Empréstimo:{" "}
                         {emprestimo.dataEmprestimo
                           ? new Date(
-                              emprestimo.dataEmprestimo
-                            ).toLocaleDateString()
+                            emprestimo.dataEmprestimo
+                          ).toLocaleDateString()
                           : "-"}
                       </Typography>
-                      <Typography variant="body2" color="text.secondary">
+                      {emprestimo.status === "emprestado" ? (
+                        <Typography variant="body2" color="text.secondary">
+                          Prazo de Devolução:{" "}
+                          {emprestimo.dataDevolucao
+                            ? new Date(
+                              emprestimo.dataDevolucao
+                            ).toLocaleDateString()
+                            : "-"}
+                        </Typography>
+                      ) : (<Typography variant="body2" color="text.secondary">
                         Data de Devolução:{" "}
                         {emprestimo.dataDevolucao
                           ? new Date(
-                              emprestimo.dataDevolucao
-                            ).toLocaleDateString()
+                            emprestimo.dataDevolucao
+                          ).toLocaleDateString()
                           : "-"}
-                      </Typography>
-                      {mensagem && (
+                      </Typography>)}
+                      {mensagem && emprestimo.status === "emprestado" && (
                         <Typography variant="body2" color="error">
                           {mensagem}
                         </Typography>
@@ -256,6 +257,22 @@ const HistoricoEmprestimos = () => {
           </Grid2>
         ) : (
           <Typography align="center">Nenhum empréstimo encontrado.</Typography>
+        )}
+        {errorMessage && (
+          <Snackbar
+            open={Boolean(errorMessage)}
+            onClose={() => setErrorMessage("")}
+            message={errorMessage}
+            autoHideDuration={6000}
+          />
+        )}
+        {successMessage && (
+          <Snackbar
+            open={Boolean(successMessage)}
+            onClose={() => setSuccessMessage("")}
+            message={successMessage}
+            autoHideDuration={6000}
+          />
         )}
       </Container>
     </div>
