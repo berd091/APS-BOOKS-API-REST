@@ -121,13 +121,27 @@ app.post('/usuarios', async (req, res) => {
 //historico de emprestimos usuario 
 app.get('/emprestimos/historico-do-usuario', verifyToken, async (req, res) => {
   try {
-    const emprestimosUsuario = await Emprestimo.find({ usuarioId: req.usuario.id }).populate('livroId', 'titulo autor');
-    res.json(emprestimosUsuario);
+    const emprestimosUsuario = await Emprestimo.find({ usuarioId: req.usuario.id }).exec();
+
+    const emprestimosComLivros = await Promise.all(
+      emprestimosUsuario.map(async (emprestimo) => {
+        const livro = await Livro.findOne({ livroId: emprestimo.livroId });
+        return {
+          ...emprestimo._doc,
+          livro: livro
+            ? { titulo: livro.titulo, capa: null }
+            : { titulo: 'Título desconhecido', capa: null },
+        };
+      })
+    );
+
+    res.json(emprestimosComLivros);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Erro ao buscar histórico de empréstimos' });
   }
 });
+
 
 //consulta de livros (catalogo)
 app.get('/livros', verifyToken, async (req, res) => {
