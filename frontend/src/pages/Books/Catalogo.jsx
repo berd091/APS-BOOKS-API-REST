@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import translate from "@vitalets/google-translate-api";
+
 import axios from "axios";
 import {
   Container,
-  Grid,
+  Grid2,
   Card,
   CardMedia,
   CardContent,
@@ -150,12 +150,12 @@ const Catalogo = () => {
             <CircularProgress />
           </Box>
         ) : filtrarLivros().length > 0 ? (
-          <Grid container spacing={4}>
+          <Grid2 container spacing={4}>
             {filtrarLivros().map((livro) => (
-              <Grid item key={livro.livroId} xs={12} sm={6} md={4} lg={3}>
+              <Grid2 item key={livro.livroId} xs={12} sm={6} md={4} lg={3}>
                 <Card
                   sx={{
-                    height: 400,
+                    height: 450,
                     width: 250,
                     display: "flex",
                     flexDirection: "column",
@@ -213,9 +213,9 @@ const Catalogo = () => {
                     </Typography>
                   </CardActions>
                 </Card>
-              </Grid>
+              </Grid2>
             ))}
-          </Grid>
+          </Grid2>
         ) : (
           <Typography align="center">Nenhum livro encontrado.</Typography>
         )}

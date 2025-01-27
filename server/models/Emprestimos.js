@@ -6,6 +6,7 @@ const EmprestimoSchema = new mongoose.Schema({
   status: { type: String, enum: ['emprestado', 'devolvido'], required: true },
   dataEmprestimo: { type: Date, required: true },
   dataDevolucao: { type: Date, required: true },
+  extendido: { type: Boolean, default: false },
 });
 
 module.exports = mongoose.model('Emprestimos', EmprestimoSchema);

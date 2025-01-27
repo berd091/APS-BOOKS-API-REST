@@ -13,6 +13,23 @@ import {
 } from "@mui/material";
 import NavBar from "../../components/navBar/navBar";
 
+const getMensagemDevolucao = (dataDevolucao) => {
+  const hoje = new Date();
+  const dataDevolucaoDate = new Date(dataDevolucao);
+  const diffEmDias = Math.ceil(
+    (dataDevolucaoDate - hoje) / (1000 * 60 * 60 * 24)
+  );
+
+  if (diffEmDias < 0) {
+    return "Prazo para devolução vencido, favor procurar a Biblioteca para devolvê-lo, sujeito a multa por não devolução";
+  } else if (diffEmDias === 0) {
+    return "Hoje é o último dia para a devolução";
+  } else if (diffEmDias <= 7) {
+    return `Faltam ${diffEmDias} dia(s) para a devolução`;
+  }
+  return null;
+};
+
 const HistoricoEmprestimos = () => {
   const [emprestimos, setEmprestimos] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -20,18 +37,24 @@ const HistoricoEmprestimos = () => {
 
   const fetchBookCover = async (titulo) => {
     try {
-      const response = await axios.get("https://www.googleapis.com/customsearch/v1", {
-        params: {
-          key: "AIzaSyCHtiaMFIZqa0AP_ps2T-P-vD2SC5MA6O8",
-          cx: "44c5ec16575214cc3",
-          q: `${titulo} livro`,
-          searchType: "image",
-          num: 1,
-        },
-      });
+      const response = await axios.get(
+        "https://www.googleapis.com/customsearch/v1",
+        {
+          params: {
+            key: "AIzaSyCHtiaMFIZqa0AP_ps2T-P-vD2SC5MA6O8",
+            cx: "44c5ec16575214cc3",
+            q: `${titulo} livro`,
+            searchType: "image",
+            num: 1,
+          },
+        }
+      );
       return response.data.items?.[0]?.link || null;
     } catch (error) {
-      console.error(`Erro ao buscar capa para o livro "${titulo}":`, error.message);
+      console.error(
+        `Erro ao buscar capa para o livro "${titulo}":`,
+        error.message
+      );
       return null;
     }
   };
@@ -64,21 +87,6 @@ const HistoricoEmprestimos = () => {
       console.error(error.message || error);
       alert("Erro ao estender prazo de devolução. Tente novamente.");
     }
-  };
-
-  const getMensagemDevolucao = (dataDevolucao) => {
-    const hoje = new Date();
-    const dataDevolucaoDate = new Date(dataDevolucao);
-    const diffEmDias = Math.ceil((dataDevolucaoDate - hoje) / (1000 * 60 * 60 * 24));
-
-    if (diffEmDias < 0) {
-      return "Prazo para devolução vencido, favor procurar a Biblioteca para devolvê-lo, sujeito a multa por não devolução";
-    } else if (diffEmDias === 0) {
-      return "Hoje é o último dia para a devolução";
-    } else if (diffEmDias <= 7) {
-      return `Faltam ${diffEmDias} dia(s) para a devolução`;
-    }
-    return null;
   };
 
   useEffect(() => {
@@ -120,6 +128,18 @@ const HistoricoEmprestimos = () => {
     fetchEmprestimos();
   }, []);
 
+  const podeEstenderPrazo = (dataEmprestimo, dataDevolucao) => {
+    const dataEmprestimoDate = new Date(dataEmprestimo);
+    const dataLimiteExtensao = new Date(
+      dataEmprestimoDate.getTime() + 30 * 24 * 60 * 60 * 1000
+    );
+    const dataAtual = new Date();
+
+    return (
+      dataAtual <= dataLimiteExtensao && dataAtual <= new Date(dataDevolucao)
+    );
+  };
+
   return (
     <div>
       <NavBar />
@@ -146,9 +166,10 @@ const HistoricoEmprestimos = () => {
           <Grid2 container spacing={4}>
             {emprestimos.map((emprestimo) => {
               const mensagem = getMensagemDevolucao(emprestimo.dataDevolucao);
-              const podeEstender =
-                new Date(emprestimo.dataEmprestimo).getTime() + 30 * 24 * 60 * 60 * 1000 >
-                new Date().getTime();
+              const podeEstender = podeEstenderPrazo(
+                emprestimo.dataEmprestimo,
+                emprestimo.dataDevolucao
+              );
 
               return (
                 <Grid2 item key={emprestimo._id} xs={12} sm={6} md={4} lg={3}>
@@ -215,16 +236,18 @@ const HistoricoEmprestimos = () => {
                           {mensagem}
                         </Typography>
                       )}
-                      {emprestimo.status === "emprestado" && podeEstender && (
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          sx={{ mt: 2 }}
-                          onClick={() => handleExtendLoan(emprestimo._id)}
-                        >
-                          Extender por mais 15 dias
-                        </Button>
-                      )}
+                      {emprestimo.status === "emprestado" &&
+                        podeEstender &&
+                        !emprestimo.extendido && (
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            sx={{ mt: 2 }}
+                            onClick={() => handleExtendLoan(emprestimo._id)}
+                          >
+                            Extender por mais 15 dias
+                          </Button>
+                        )}
                     </CardContent>
                   </Card>
                 </Grid2>

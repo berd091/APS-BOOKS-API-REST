@@ -11,6 +11,17 @@
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
+  
+}
+
+.footer {
+  background-color: transparent;
+  color: #afafaf;
+  font-weight: bold;
+  padding: 10px;
+  text-align: center;
+  margin-top: auto; 
+  font-size: 0.8em;
 }
 
 .App-header {
@@ -27,6 +38,7 @@
 .App-link {
   color: #61dafb;
 }
+
 
 @keyframes App-logo-spin {
   from {
