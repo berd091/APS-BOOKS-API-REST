@@ -5,20 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8d255d34-eb3d-4d4a-927d-8705906c58f7" name="Changes" comment="Começando a deixar as requisições do jeito REST, e também começando a colocar alguns padrões dentro do código como o factory para criação de usuários e livros">
-      <change afterPath="$PROJECT_DIR$/server/app.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/config/db.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/controllers/authController.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/controllers/emprestimoController.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/controllers/livrosController.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/controllers/reservaController.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/controllers/usuarioController.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/middlewares/authMiddleware.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/routes/authRoutes.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/routes/emprestimoRoutes.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/routes/livrosRoutes.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/routes/reservaRoutes.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/routes/usuarioRoutes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/server.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/Books/Catalogo.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/Books/Catalogo.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,20 +41,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Api-Rest",
-    "last_opened_file_path": "C:/Users/bruno/Documents/GitReps/APS-BOOKS-API-REST",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Api-Rest&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/bruno/Documents/GitReps/APS-BOOKS-API-REST&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\bruno\Documents\GitReps\APS-BOOKS-API-REST\server" />
@@ -88,7 +76,8 @@
       <option name="presentableId" value="Default" />
       <updated>1737910323029</updated>
       <workItem from="1737910324613" duration="5453000" />
-      <workItem from="1737916145245" duration="4099000" />
+      <workItem from="1737916145245" duration="4857000" />
+      <workItem from="1738027556434" duration="2724000" />
     </task>
     <task id="LOCAL-00001" summary="Começando a deixar as requisições do jeito REST, e também começando a colocar alguns padrões dentro do código como o factory para criação de usuários e livros">
       <option name="closed" value="true" />

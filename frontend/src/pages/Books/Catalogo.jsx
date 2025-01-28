@@ -37,7 +37,9 @@ const Catalogo = () => {
           headers: {
             authorization: `Bearer ${token}`,
           },
-        });
+
+        }
+        );
 
         const livrosComImagens = await Promise.all(
           response.data.map(async (livro) => {
