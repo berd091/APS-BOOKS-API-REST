@@ -78,6 +78,7 @@ const Login = () => {
 						fullWidth
 						margin="normal"
 						required
+						autoComplete="email"
 						InputProps={{
 							startAdornment: (
 								<InputAdornment position="start">
@@ -95,6 +96,7 @@ const Login = () => {
 						fullWidth
 						margin="normal"
 						required
+						autoComplete="current-password"
 						inputProps={{
 							onPaste: (e) => {
 								e.preventDefault();

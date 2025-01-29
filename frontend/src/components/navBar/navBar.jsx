@@ -65,6 +65,7 @@ function NavBar() {
     { text: "Remover Livros", to: "/admin2" },
     { text: "Registrar Devolução", to: "/devolucao" },
     { text: "Catálogo", to: "/catalogo" },
+    { text: "Registrar Bibliotecário", to: "/registro-bibliotecario" },
   ];
 
   const userLinks = [{ text: "Catálogo", to: "/catalogo" }];

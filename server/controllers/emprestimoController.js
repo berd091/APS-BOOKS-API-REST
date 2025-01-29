@@ -6,13 +6,28 @@ const Usuario = require('../models/Usuario');
 // Obter histórico de empréstimos de um usuário
 const getHistoricoEmprestimosUsuario = async (req, res) => {
     try {
-        const emprestimos = await Emprestimo.find({ usuarioId: req.usuario.id })
-            .populate('livroId', 'titulo autor');
+        const emprestimosUsuario = await Emprestimo.find({
+            usuarioId: req.usuario.id,
+        }).exec();
 
-        res.json(emprestimos);
+        const emprestimosComLivros = await Promise.all(
+            emprestimosUsuario.map(async (emprestimo) => {
+                const livro = await Livro.findOne({ livroId: emprestimo.livroId });
+                return {
+                    ...emprestimo._doc,
+                    livro: livro
+                        ? { titulo: livro.titulo, capa: null }
+                        : { titulo: "Título desconhecido", capa: null },
+                };
+            })
+        );
+
+        res.json(emprestimosComLivros);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Erro ao buscar histórico de empréstimos' });
+        res
+            .status(500)
+            .json({ message: "Erro ao buscar histórico de empréstimos" });
     }
 };
 
@@ -53,35 +68,34 @@ const solicitarEmprestimo = async (req, res) => {
 
 // Buscar empréstimos pelo e-mail do usuário
 const getEmprestimosPorEmail = async (req, res) => {
-    const { email } = req.query; // Pegando o e-mail da query string
+    const { email } = req.query; 
 
     if (!email) {
         return res.status(400).json({ message: 'E-mail é obrigatório para a busca' });
     }
 
     try {
-        // Buscar o usuário pelo e-mail
+
         const usuario = await Usuario.findOne({ email });
 
         if (!usuario) {
             return res.status(404).json({ message: 'Usuário não encontrado' });
         }
 
-        // Buscar os empréstimos associados a esse usuário
         const emprestimos = await Emprestimo.aggregate([
             {
-                $match: { usuarioId: usuario._id }, // Filtrar os empréstimos pelo usuário
+                $match: { usuarioId: usuario._id },
             },
             {
                 $lookup: {
-                    from: 'livros', // Nome da coleção de livros
-                    localField: 'livroId', // Campo em Emprestimos
-                    foreignField: 'livroId', // Campo correspondente em Livros
-                    as: 'livro', // Nome do campo resultante
+                    from: 'livros', 
+                    localField: 'livroId', 
+                    foreignField: 'livroId', 
+                    as: 'livro',
                 },
             },
             {
-                $unwind: '$livro', // Desaninha o array resultante
+                $unwind: '$livro',
             },
         ]);
 
@@ -102,10 +116,16 @@ const extenderEmprestimo = async (req, res) => {
             return res.status(404).json({ message: 'Empréstimo não encontrado ou acesso negado' });
         }
 
+        if (emprestimo.extendido) {
+            return res.status(400).json({ message: 'Este empréstimo já foi estendido uma vez.' });
+        }
+
         const novaDataDevolucao = new Date(emprestimo.dataDevolucao);
         novaDataDevolucao.setDate(novaDataDevolucao.getDate() + 15);
 
         emprestimo.dataDevolucao = novaDataDevolucao.toISOString();
+        emprestimo.extendido = true; 
+
         await emprestimo.save();
 
         res.json({ message: 'Prazo de devolução estendido', emprestimo });
@@ -114,6 +134,7 @@ const extenderEmprestimo = async (req, res) => {
         res.status(500).json({ message: 'Erro ao estender prazo de devolução' });
     }
 };
+
 
 // Registrar devolução de um empréstimo
 const registrarDevolucao = async (req, res) => {
@@ -127,6 +148,7 @@ const registrarDevolucao = async (req, res) => {
         }
 
         emprestimo.status = 'devolvido';
+        emprestimo.dataDevolucao = new Date(); 
         await emprestimo.save();
 
         const livro = await Livro.findOne({ livroId: emprestimo.livroId });

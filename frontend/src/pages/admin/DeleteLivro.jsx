@@ -130,7 +130,7 @@ const DeleteLivro = () => {
         ) : livros.length > 0 ? (
           <Grid2 container spacing={4}>
             {livros.map((livro) => (
-              <Grid2 item key={livro.id} xs={12} sm={6} md={4} lg={3}>
+              <Grid2 item key={livro.livroId} xs={12} sm={6} md={4} lg={3}>
                 <Card
                   sx={{
                     height: 400,

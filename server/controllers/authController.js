@@ -2,6 +2,9 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Usuario = require('../models/Usuario');
 const JWT_SECRET = process.env.JWT_SECRET;
+const { v4: uuidv4 } = require('uuid');
+
+
 
 // Login
 const login = async (req, res) => {
@@ -9,28 +12,17 @@ const login = async (req, res) => {
 
 	try {
 		const usuario = await Usuario.findOne({ email });
-		// usuario é null
+
 		if (!usuario) {
 			return res.status(401).json({ message: 'Credenciais inválidas' });
 		}
-		// o login é para admin
-		if (usuario.role === "admin") {
-			if (usuario.password !== password) {
-				return res.status(401).json({ message: 'Credenciais inválidas' });
-			}
-		}
-		// o login é para user
+
 		else {
-			if (usuario.password !== await bcrypt.compare(password, usuario.password)) {
+			if (!(await bcrypt.compare(password, usuario.password))) {
 				return res.status(401).json({ message: 'Credenciais inválidas' });
 			}
+
 		}
-
-		// Checagem genérica
-		// if (!usuario || !(await bcrypt.compare(password, usuario.password))) {
-		//     return res.status(401).json({ message: 'Credenciais inválidas' });
-		// }
-
 		const token = jwt.sign({ id: usuario._id, role: usuario.role }, JWT_SECRET, { expiresIn: '1h' });
 		res.json({ token });
 	} catch (error) {
@@ -38,7 +30,6 @@ const login = async (req, res) => {
 	}
 };
 
-// Registro de Administrador
 const registerAdmin = async (req, res) => {
 	if (req.usuario.role !== 'admin') {
 		return res.status(403).json({ message: 'Acesso negado' });
@@ -48,27 +39,35 @@ const registerAdmin = async (req, res) => {
 
 	try {
 		const hashedPassword = await bcrypt.hash(password, 10);
-		const newAdmin = await Usuario.create({
+
+		const novoAdmin = new Usuario({
+			id: uuidv4(),
 			name,
 			email,
 			password: hashedPassword,
-			role: 'admin',
+			role: 'admin', 
 		});
 
-		res.status(201).json(newAdmin);
+		const adminSalvo = await novoAdmin.save();
+		res.status(201).json({ id: adminSalvo.id, name: adminSalvo.name, email: adminSalvo.email });
 	} catch (error) {
-		res.status(500).json({ message: 'Erro ao registrar administrador', error });
+		if (error.code === 11000) {
+			res.status(400).json({ message: 'Email já cadastrado' });
+		} else {
+			console.error(error);
+			res.status(500).json({ message: 'Erro ao criar usuário' });
+		}
 	}
 };
 
 const getRole = async (req, res) => {
 	// console.log(req.usuario.role)
 	try {
-		res.json({ role:req.usuario.role });
+		res.json({ role: req.usuario.role });
 	} catch (error) {
 		res.status(500).json({ message: 'Erro ao verificar a autoridade do usuario', error });
 	}
 };
 
 
-module.exports = { login, registerAdmin, getRole};
+module.exports = { login, registerAdmin, getRole };

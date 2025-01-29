@@ -6,7 +6,7 @@ const router = express.Router();
 
 // Rotas de autenticação
 router.post('/login', login);
-router.post('/admin', verifyToken, registerAdmin);
+router.post('/register', verifyToken, registerAdmin);
 router.get("/role", verifyToken, getRole);
 
 module.exports = router;

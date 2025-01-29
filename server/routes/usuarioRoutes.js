@@ -11,10 +11,10 @@ const {
 const router = express.Router();
 
 // Rotas para usuários
-router.get('/', verifyToken, getUsuarios); // Listar todos os usuários (Admin)
-router.get('/me', verifyToken, getPerfilUsuario); // Obter informações do próprio perfil
-router.post('/', criarUsuario); // Criar novo usuário
-router.put('/me', verifyToken, atualizarUsuario); // Atualizar informações do próprio perfil
-router.delete('/me', verifyToken, deletarUsuario); // Deletar o próprio perfil
+router.get('/', verifyToken, getUsuarios); 
+router.get('/me', verifyToken, getPerfilUsuario); 
+router.post('/', criarUsuario); 
+router.put('/me', verifyToken, atualizarUsuario);
+router.delete('/me', verifyToken, deletarUsuario); 
 
 module.exports = router;

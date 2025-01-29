@@ -9,6 +9,7 @@ import EmprestimoLivro from "../pages/Books/EmprestimoLivro";
 import AddLivro from "../pages/admin/AddLivro";
 import DeleteLivro from "../pages/admin/DeleteLivro";
 import RegistrarDevolucao from "../pages/admin/RegistrarDevolucao";
+import RegistroBibliotecario from "../pages/admin/RegistroBibliotecario";
 
 const AppRoutes = () => {
   return (
@@ -23,6 +24,7 @@ const AppRoutes = () => {
         <Route path="/emprestimo/:id" element={<EmprestimoLivro />} />
         <Route path="/admin" element={<AddLivro />} />{" "}
         <Route path="/admin2" element={<DeleteLivro />} />
+        <Route path="/registro-bibliotecario" element={<RegistroBibliotecario />} />
         <Route path="*" element={<Catalogo />} />
       </Routes>
     </Router>

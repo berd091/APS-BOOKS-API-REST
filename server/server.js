@@ -23,18 +23,17 @@ const MONGO_URI = process.env.MONGO_URI;
 class MongoDB {
 	static connection;
 
-	static async connect(uri) {
-		if (!MongoDB.connection) {
-			MongoDB.connection = mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-		}
-		return MongoDB.connection;
-
-	}
+  static async connect(uri) {
+    if (!MongoDB.connection) {
+      MongoDB.connection = mongoose.connect(uri);
+    }
+    return MongoDB.connection;
+  }
 }
 
-MongoDB.connect(MONGO_URI).catch((err) => console.error("Erro ao conectar ao MongoDB:", err));
-
-/** AUTENTICAÇÃO */
+MongoDB.connect(MONGO_URI)
+  .then(() => console.log("Conectado ao MongoDB com sucesso!"))
+  .catch((err) => console.error("Erro ao conectar ao MongoDB:", err));
 
 const autenticarUsuario = async (email, password) => {
 	const usuario = await Usuario.findOne({ email });

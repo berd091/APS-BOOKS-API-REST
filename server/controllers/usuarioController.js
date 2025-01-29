@@ -45,7 +45,7 @@ const criarUsuario = async (req, res) => {
             name,
             email,
             password: hashedPassword,
-            role: 'usuario', // Sempre usuário comum ao cadastrar
+            role: 'usuario', 
         });
 
         const usuarioSalvo = await novoUsuario.save();

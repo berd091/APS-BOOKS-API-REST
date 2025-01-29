@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const mongoose = require('./config/db');
+const connectDB = require('./config/db');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
@@ -13,6 +13,7 @@ const reservaRoutes = require('./routes/reservaRoutes');
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+connectDB(); 
 
 // Carregar rotas
 app.use('/auth', authRoutes);

@@ -57,7 +57,7 @@ const HistoricoEmprestimos = () => {
       }
 
       const response = await axios.put(
-        `http://localhost:3001/emprestimos/extender/${emprestimoId}`,
+        `http://localhost:3001/emprestimo/extender/${emprestimoId}`,
         {},
         {
           headers: {
@@ -91,7 +91,7 @@ const HistoricoEmprestimos = () => {
         }
 
         const response = await axios.get(
-          "http://localhost:3001/emprestimos/historico-do-usuario",
+          "http://localhost:3001/emprestimo/historico-do-usuario",
           {
             headers: {
               authorization: `Bearer ${token}`,

@@ -2,6 +2,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
+    "curl": "^0.1.4",
     "dotenv": "^16.4.7",
     "json-server": "^0.17.4",
     "jsonwebtoken": "^9.0.2",
