@@ -23,6 +23,7 @@ const AppRoutes = () => {
         <Route path="/emprestimo/:id" element={<EmprestimoLivro />} />
         <Route path="/admin" element={<AddLivro />} />{" "}
         <Route path="/admin2" element={<DeleteLivro />} />
+        <Route path="*" element={<Catalogo />} />
       </Routes>
     </Router>
   );
