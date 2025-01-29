@@ -61,4 +61,14 @@ const registerAdmin = async (req, res) => {
 	}
 };
 
-module.exports = { login, registerAdmin };
+const getRole = async (req, res) => {
+	// console.log(req.usuario.role)
+	try {
+		res.json({ role:req.usuario.role });
+	} catch (error) {
+		res.status(500).json({ message: 'Erro ao verificar a autoridade do usuario', error });
+	}
+};
+
+
+module.exports = { login, registerAdmin, getRole};
