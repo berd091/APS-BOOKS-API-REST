@@ -28,7 +28,7 @@ const AddLivro = () => {
     const verificarPermissao = async () => {
       try {
         const token = localStorage.getItem("authToken");
-        const response = await axios.get("http://localhost:3001/role", {
+        const response = await axios.get("http://localhost:3001/auth/role", {
           headers: {
             authorization: `Bearer ${token}`,
           },

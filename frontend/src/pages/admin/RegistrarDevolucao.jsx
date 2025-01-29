@@ -16,7 +16,7 @@ const RegistrarDevolucao = () => {
     const verificarPermissao = async () => {
       try {
         const token = localStorage.getItem("authToken");
-        const response = await axios.get("http://localhost:3001/role", {
+        const response = await axios.get("http://localhost:3001/auth/role", {
           headers: {
             authorization: `Bearer ${token}`,
           },
@@ -45,7 +45,7 @@ const RegistrarDevolucao = () => {
 
     try {
       const token = localStorage.getItem("authToken");
-      const response = await axios.get(`http://localhost:3001/emprestimos?email=${email}`, {
+      const response = await axios.get(`http://localhost:3001/emprestimo/buscar?email=${email}`, {
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -67,7 +67,7 @@ const RegistrarDevolucao = () => {
     try {
       const token = localStorage.getItem("authToken");
       await axios.post(
-        `http://localhost:3001/emprestimos/return/${emprestimoId}`,
+        `http://localhost:3001/emprestimo/return/${emprestimoId}`,
         {},
         {
           headers: {

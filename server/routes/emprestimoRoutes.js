@@ -6,6 +6,7 @@ const {
     extenderEmprestimo,
     registrarDevolucao,
     atualizarStatusEmprestimo,
+    getEmprestimosPorEmail,
 } = require('../controllers/emprestimoController');
 
 const router = express.Router();
@@ -16,5 +17,6 @@ router.post('/:livroId', verifyToken, solicitarEmprestimo); // Solicitar um novo
 router.put('/extender/:id', verifyToken, extenderEmprestimo); // Extender o prazo de devolução
 router.post('/return/:id', verifyToken, registrarDevolucao); // Registrar devolução
 router.put('/status/:id', verifyToken, atualizarStatusEmprestimo); // Atualizar status (somente admin)
+router.get('/buscar', verifyToken, getEmprestimosPorEmail);
 
 module.exports = router;

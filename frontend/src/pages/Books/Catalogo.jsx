@@ -34,6 +34,7 @@ const Catalogo = () => {
 			try {
 				
 				const token = localStorage.getItem("authToken");
+                console.log(token);
 				const response = await axios.get("http://localhost:3001/livros", {
 					headers: {
 						authorization: `Bearer ${token}`,

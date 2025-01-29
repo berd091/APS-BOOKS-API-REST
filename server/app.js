@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 // Carregar rotas
 app.use('/auth', authRoutes);
 app.use('/livros', livrosRoutes);
-app.use('/emprestimos', emprestimoRoutes);
+app.use('/emprestimo', emprestimoRoutes);
 app.use('/usuarios', usuarioRoutes);
 app.use('/reservas', reservaRoutes);
 
