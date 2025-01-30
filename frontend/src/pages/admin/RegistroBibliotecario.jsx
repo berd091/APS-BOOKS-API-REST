@@ -22,6 +22,7 @@ import {
   VisibilityOff,
   AdminPanelSettings,
 } from "@mui/icons-material";
+import NavBar from "../../components/navBar/navBar";
 
 const RegistroBibliotecario = () => {
   const [formData, setFormData] = useState({
@@ -39,13 +40,19 @@ const RegistroBibliotecario = () => {
       try {
         const token = localStorage.getItem("authToken");
         const response = await axios.get("http://localhost:3001/auth/role", {
-          headers: { authorization: `Bearer ${token}` },
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
         });
 
         if (response.data.role !== "admin") {
+          alert(
+            "Acesso restrito! Apenas bibliotecários podem acessar esta página."
+          );
           navigate("/");
         }
       } catch (error) {
+        console.error("Erro ao verificar permissões:", error);
         navigate("/");
       }
     };
@@ -93,6 +100,8 @@ const RegistroBibliotecario = () => {
   };
 
   return (
+    <>
+    <NavBar />
     <Container maxWidth="md" sx={{ my: 4 }}>
       <Paper elevation={3} sx={{ p: 4, borderRadius: 4 }}>
         <Box
@@ -207,6 +216,7 @@ const RegistroBibliotecario = () => {
         </form>
       </Paper>
     </Container>
+    </>
   );
 };
 

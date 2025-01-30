@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const connectDB = require('./config/db');
+const MongoDB = require('./config/db');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
@@ -13,14 +13,18 @@ const reservaRoutes = require('./routes/reservaRoutes');
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
-connectDB(); 
 
-// Carregar rotas
-app.use('/auth', authRoutes);
-app.use('/livros', livrosRoutes);
-app.use('/emprestimo', emprestimoRoutes);
-app.use('/usuarios', usuarioRoutes);
-app.use('/reservas', reservaRoutes);
+MongoDB.connect()
+  .then(() => {
+    app.use('/auth', authRoutes);
+    app.use('/livros', livrosRoutes);
+    app.use('/emprestimo', emprestimoRoutes);
+    app.use('/usuarios', usuarioRoutes);
+    app.use('/reservas', reservaRoutes);
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+    const PORT = process.env.PORT || 3001;
+    app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+  })
+  .catch((err) => {
+    console.error('Erro ao conectar ao banco de dados. Servidor não iniciado.', err);
+  });
