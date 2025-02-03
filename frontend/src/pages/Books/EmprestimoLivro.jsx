@@ -42,7 +42,7 @@ const EmprestimoLivro = () => {
   const calcularDataDevolucao = () => {
     const hoje = new Date();
     const devolucao = new Date(hoje);
-    devolucao.setDate(hoje.getDate() + 15);
+    devolucao.setDate(hoje.getDate() + 7);
     return devolucao;
   };
 
@@ -50,7 +50,6 @@ const EmprestimoLivro = () => {
     const fetchLivro = async () => {
       try {
         const token = localStorage.getItem("authToken");
-        console.log(token);
         const response = await axios.get(`http://localhost:3001/livros/${id}`, {
           headers: {
             authorization: `Bearer ${token}`,
@@ -193,7 +192,7 @@ const EmprestimoLivro = () => {
 
                 <Box sx={{ mb: 4, backgroundColor: "background.paper" }}>
                   <Chip
-                    label="Detalhes do Empréstimo"
+                    label="Detalhes da Reserva"
                     color="primary"
                     variant="outlined"
                     sx={{ mb: 2, fontWeight: 600 }}
@@ -224,7 +223,7 @@ const EmprestimoLivro = () => {
                     />
                     <DetailItem
                       icon={<BsClockHistory size={20} />}
-                      title="Data de Devolução"
+                      title="Data Limite de Coleta"
                       value={format(dataDevolucao, "dd 'de' MMMM 'de' yyyy", {
                         locale: ptBR,
                       })}
