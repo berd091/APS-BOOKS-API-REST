@@ -167,7 +167,7 @@ const registrarDevolucao = async (req, res) => {
 // Atualizar o status de um empréstimo (Admin)
 const atualizarStatusEmprestimo = async (req, res) => {
     if (req.usuario.role !== 'admin') {
-        return res.status(403).json({ message: 'Acesso restrito para administradores' });
+        return res.status(403).json({ message: 'Acesso restrito! Apenas para administradores' });
     }
 
     const emprestimoId = req.params.id;

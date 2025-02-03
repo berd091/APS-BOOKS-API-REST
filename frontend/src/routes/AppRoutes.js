@@ -10,6 +10,7 @@ import AddLivro from "../pages/admin/AddLivro";
 import DeleteLivro from "../pages/admin/DeleteLivro";
 import RegistrarDevolucao from "../pages/admin/RegistrarDevolucao";
 import RegistroBibliotecario from "../pages/admin/RegistroBibliotecario";
+import RegistrarEmprestimo from "../pages/admin/RegistrarEmprestimo";
 
 const AppRoutes = () => {
   return (
@@ -18,6 +19,7 @@ const AppRoutes = () => {
         <Route path="/" element={<Login />} />
         <Route path="/cadastro" element={<Cadastro />} />
         <Route path="/devolucao" element={<RegistrarDevolucao />} />
+        <Route path="/registro-emprestimo" element={<RegistrarEmprestimo />} />
         <Route path="/catalogo" element={<Catalogo />} />
         <Route path="/usuario" element={<Usuario />} />{" "}
         <Route path="/livros/:id" element={<DetalhesLivro />} />

@@ -63,6 +63,7 @@ function NavBar() {
   const adminLinks = [
     { text: "Adicionar Livros", to: "/admin" },
     { text: "Remover Livros", to: "/admin2" },
+    { text: "Registrar Empréstimo", to: "/registro-emprestimo" },
     { text: "Registrar Devolução", to: "/devolucao" },
     { text: "Catálogo", to: "/catalogo" },
     { text: "Registrar Bibliotecário", to: "/registro-bibliotecario" },

@@ -50,6 +50,7 @@ const EmprestimoLivro = () => {
     const fetchLivro = async () => {
       try {
         const token = localStorage.getItem("authToken");
+        console.log(token);
         const response = await axios.get(`http://localhost:3001/livros/${id}`, {
           headers: {
             authorization: `Bearer ${token}`,
@@ -80,7 +81,7 @@ const EmprestimoLivro = () => {
     try {
       const token = localStorage.getItem("authToken");
       await axios.post(
-        `http://localhost:3001/emprestimo/${livro.livroId}`,
+        `http://localhost:3001/reservas/${livro.livroId}`,
         {},
         { headers: { authorization: `Bearer ${token}` } }
       );

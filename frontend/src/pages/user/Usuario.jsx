@@ -31,8 +31,26 @@ const getMensagemDevolucao = (dataDevolucao) => {
   return null;
 };
 
+const getMensagemReserva = (dataLimite) => {
+  const hoje = new Date();
+  const dataLimiteDate = new Date(dataLimite);
+  const diffEmDias = Math.ceil(
+      (dataLimiteDate - hoje) / (1000 * 60 * 60 * 24)
+  );
+
+  if (diffEmDias < 0) {
+    return "Prazo, para pegar o livro, ultrapassado! Para fazer o empréstimo precisará refazer a reserva!";
+  } else if (diffEmDias === 0) {
+    return "Hoje é o último dia para pegar o livro!";
+  } else if (diffEmDias <= 7) {
+    return `Faltam ${diffEmDias} dia(s) para pegar o livro!`;
+  }
+  return null;
+};
+
 const HistoricoEmprestimos = () => {
   const [emprestimos, setEmprestimos] = useState([]);
+  const [reservas, setReservas] = useState([]);
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -79,8 +97,40 @@ const HistoricoEmprestimos = () => {
     }
   };
 
+  const handleCancelReserve = async (reservaId)  => {
+    setErrorMessage("");
+    setSuccessMessage("");
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        throw new Error("Token de autenticação não encontrado.");
+      }
+
+      const response = await axios.put(
+          `http://localhost:3001/reservas/${reservaId}`,
+          {},
+          {
+            headers: {
+              authorization: `Bearer ${token}`,
+            },
+          }
+      );
+
+      const updatedReservas = reservas.map((reserva) =>
+          reserva._id === reservaId
+              ? { ...reserva, ...response.data.reserva }
+              : reserva
+      );
+      setReservas(updatedReservas);
+      setSuccessMessage("Reserva cancelada com sucesso!");
+    } catch (error) {
+      console.error(error.message || error);
+      setErrorMessage("Erro ao cancelar reserva. Tente novamente.");
+    }
+  }
+
   useEffect(() => {
-    const fetchEmprestimos = async () => {
+    const fetchHistoricoUsuario = async () => {
       setErrorMessage("");
       setSuccessMessage("");
       setLoading(true);
@@ -90,25 +140,35 @@ const HistoricoEmprestimos = () => {
           throw new Error("Token de autenticação não encontrado.");
         }
 
-        const response = await axios.get(
-          "http://localhost:3001/emprestimo/historico-do-usuario",
-          {
-            headers: {
-              authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const [emprestimosResponse, reservasResponse] = await Promise.all([
+          axios.get('http://localhost:3001/emprestimo/historico-do-usuario', {
+            headers: { authorization: `Bearer ${token}` },
+          }),
+          axios.get('http://localhost:3001/reservas/historico-reservas', {
+            headers: { authorization: `Bearer ${token}` },
+          }),
+        ]);
 
         const emprestimosComCapas = await Promise.all(
-          response.data.map(async (emprestimo) => {
-            const capa = emprestimo.livro?.titulo
-              ? await fetchBookCover(emprestimo.livro.titulo)
-              : null;
-            return { ...emprestimo, livro: { ...emprestimo.livro, capa } };
-          })
+            emprestimosResponse.data.map(async (emprestimo) => {
+              const capa = emprestimo.livro?.titulo
+                  ? await fetchBookCover(emprestimo.livro.titulo)
+                  : null;
+              return { ...emprestimo, livro: { ...emprestimo.livro, capa } };
+            })
+        );
+
+        const reservasComCapas = await Promise.all(
+            reservasResponse.data.map(async (reserva) => {
+              const capa = reserva.livro?.titulo
+                  ? await fetchBookCover(reserva.livro.titulo)
+                  : null;
+              return { ...reserva, livro: { ...reserva.livro, capa } };
+            })
         );
 
         setEmprestimos(emprestimosComCapas);
+        setReservas(reservasComCapas);
       } catch (err) {
         console.error(err.message || err);
         setErrorMessage("Erro ao carregar os empréstimos. Tente novamente.");
@@ -117,9 +177,8 @@ const HistoricoEmprestimos = () => {
       }
     };
 
-    fetchEmprestimos();
+    fetchHistoricoUsuario();
   }, []);
-
   const podeEstenderPrazo = (dataEmprestimo, dataDevolucao) => {
     const dataEmprestimoDate = new Date(dataEmprestimo);
     const dataLimiteExtensao = new Date(
@@ -138,7 +197,7 @@ const HistoricoEmprestimos = () => {
 
       <Container sx={{ py: 4 }}>
         <Typography variant="h3" align="center" gutterBottom>
-          Histórico de Empréstimos
+          Histórico de Reservas
         </Typography>
         {errorMessage && (
           <Typography color="error" align="center" sx={{ mb: 4 }}>
@@ -154,17 +213,13 @@ const HistoricoEmprestimos = () => {
           >
             <CircularProgress />
           </Box>
-        ) : emprestimos.length > 0 ? (
+        ) : reservas.length > 0 ? (
           <Grid2 container spacing={4}>
-            {emprestimos.map((emprestimo) => {
-              const mensagem = getMensagemDevolucao(emprestimo.dataDevolucao);
-              const podeEstender = podeEstenderPrazo(
-                emprestimo.dataEmprestimo,
-                emprestimo.dataDevolucao
-              );
+            {reservas.map((reserva) => {
+              const mensagem = getMensagemReserva(reserva.dataLimite);
 
               return (
-                <Grid2 item key={emprestimo._id} xs={12} sm={6} md={4} lg={3}>
+                <Grid2 item key={reserva._id} xs={12} sm={6} md={4} lg={3}>
                   <Card
                     sx={{
                       height: "100%",
@@ -172,7 +227,7 @@ const HistoricoEmprestimos = () => {
                       flexDirection: "column",
                     }}
                   >
-                    {emprestimo.livro?.capa ? (
+                    {reserva.livro?.capa ? (
                       <CardMedia
                         component="img"
                         sx={{
@@ -181,8 +236,8 @@ const HistoricoEmprestimos = () => {
                           objectFit: "cover",
                           alignSelf: "center",
                         }}
-                        image={emprestimo.livro.capa}
-                        alt={emprestimo.livro.titulo}
+                        image={reserva.livro.capa}
+                        alt={reserva.livro.titulo}
                       />
                     ) : (
                       <Box
@@ -199,56 +254,58 @@ const HistoricoEmprestimos = () => {
                     )}
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
-                        {emprestimo.livro?.titulo || "Título Desconhecido"}
+                        {reserva.livro?.titulo || "Título Desconhecido"}
                       </Typography>
                       <Typography variant="subtitle2" color="text.secondary">
                         Status:{" "}
-                        {emprestimo.status === "emprestado"
-                          ? "Empréstimo Ativo"
-                          : "Devolvido"}
+                        {reserva.status === "reservado"
+                          ? "Reserva Ativa"
+                          : reserva.status === "cancelado"
+                                ? "Cancelado."
+                                : reserva.status === "emprestado"
+                                ? "Emprestimo registrado!"
+                                : "Cancelado pelo bibliotecário."}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        Data de Empréstimo:{" "}
-                        {emprestimo.dataEmprestimo
+                        Data da Reserva:{" "}
+                        {reserva.dataReserva
                           ? new Date(
-                            emprestimo.dataEmprestimo
+                                reserva.dataReserva
                           ).toLocaleDateString()
                           : "-"}
                       </Typography>
-                      {emprestimo.status === "emprestado" ? (
+                      {reserva.status === "reservado" ? (
                         <Typography variant="body2" color="text.secondary">
-                          Prazo de Devolução:{" "}
-                          {emprestimo.dataDevolucao
+                          Prazo de Coleta:{" "}
+                          {reserva.dataLimite
                             ? new Date(
-                              emprestimo.dataDevolucao
+                              reserva.dataLimite
                             ).toLocaleDateString()
                             : "-"}
                         </Typography>
                       ) : (<Typography variant="body2" color="text.secondary">
-                        Data de Devolução:{" "}
-                        {emprestimo.dataDevolucao
+                        Data de Atualização:{" "}
+                        {reserva.dataAtualizacao
                           ? new Date(
-                            emprestimo.dataDevolucao
+                                reserva.dataAtualizacao
                           ).toLocaleDateString()
                           : "-"}
                       </Typography>)}
-                      {mensagem && emprestimo.status === "emprestado" && (
+                      {mensagem && reserva.status === "reservado" && (
                         <Typography variant="body2" color="error">
                           {mensagem}
                         </Typography>
                       )}
-                      {emprestimo.status === "emprestado" &&
-                        podeEstender &&
-                        !emprestimo.extendido && (
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            sx={{ mt: 2 }}
-                            onClick={() => handleExtendLoan(emprestimo._id)}
-                          >
-                            Extender por mais 15 dias
-                          </Button>
-                        )}
+                      {reserva.status === "reservado" && (
+                              <Button
+                                  variant="contained"
+                                  color="primary"
+                                  sx={{ mt: 2 }}
+                                  onClick={() => handleCancelReserve(reserva._id)}
+                              >
+                                Cancelar reserva
+                              </Button>
+                          )}
                     </CardContent>
                   </Card>
                 </Grid2>
@@ -256,7 +313,7 @@ const HistoricoEmprestimos = () => {
             })}
           </Grid2>
         ) : (
-          <Typography align="center">Nenhum empréstimo encontrado.</Typography>
+          <Typography align="center">Nenhuma reserva encontrada.</Typography>
         )}
         {errorMessage && (
           <Snackbar
@@ -273,6 +330,145 @@ const HistoricoEmprestimos = () => {
             message={successMessage}
             autoHideDuration={6000}
           />
+        )}
+      </Container>
+      <Container sx={{ py: 4 }}>
+        <Typography variant="h3" align="center" gutterBottom>
+          Histórico de Empréstimos
+        </Typography>
+        {errorMessage && (
+            <Typography color="error" align="center" sx={{ mb: 4 }}>
+              {errorMessage}
+            </Typography>
+        )}
+        {loading ? (
+            <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                height="60vh"
+            >
+              <CircularProgress />
+            </Box>
+        ) : emprestimos.length > 0 ? (
+            <Grid2 container spacing={4}>
+              {emprestimos.map((emprestimo) => {
+                const mensagem = getMensagemDevolucao(emprestimo.dataDevolucao);
+                const podeEstender = podeEstenderPrazo(
+                    emprestimo.dataEmprestimo,
+                    emprestimo.dataDevolucao
+                );
+
+                return (
+                    <Grid2 item key={emprestimo._id} xs={12} sm={6} md={4} lg={3}>
+                      <Card
+                          sx={{
+                            height: "100%",
+                            display: "flex",
+                            flexDirection: "column",
+                          }}
+                      >
+                        {emprestimo.livro?.capa ? (
+                            <CardMedia
+                                component="img"
+                                sx={{
+                                  width: 128,
+                                  height: 190,
+                                  objectFit: "cover",
+                                  alignSelf: "center",
+                                }}
+                                image={emprestimo.livro.capa}
+                                alt={emprestimo.livro.titulo}
+                            />
+                        ) : (
+                            <Box
+                                height="180px"
+                                display="flex"
+                                justifyContent="center"
+                                alignItems="center"
+                                bgcolor="grey.300"
+                            >
+                              <Typography variant="body2" color="text.secondary">
+                                Capa indisponível
+                              </Typography>
+                            </Box>
+                        )}
+                        <CardContent>
+                          <Typography variant="h6" gutterBottom>
+                            {emprestimo.livro?.titulo || "Título Desconhecido"}
+                          </Typography>
+                          <Typography variant="subtitle2" color="text.secondary">
+                            Status:{" "}
+                            {emprestimo.status === "emprestado"
+                                ? "Empréstimo Ativo"
+                                : "Devolvido"}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Data de Empréstimo:{" "}
+                            {emprestimo.dataEmprestimo
+                                ? new Date(
+                                    emprestimo.dataEmprestimo
+                                ).toLocaleDateString()
+                                : "-"}
+                          </Typography>
+                          {emprestimo.status === "emprestado" ? (
+                              <Typography variant="body2" color="text.secondary">
+                                Prazo de Devolução:{" "}
+                                {emprestimo.dataDevolucao
+                                    ? new Date(
+                                        emprestimo.dataDevolucao
+                                    ).toLocaleDateString()
+                                    : "-"}
+                              </Typography>
+                          ) : (<Typography variant="body2" color="text.secondary">
+                            Data de Devolução:{" "}
+                            {emprestimo.dataDevolucao
+                                ? new Date(
+                                    emprestimo.dataDevolucao
+                                ).toLocaleDateString()
+                                : "-"}
+                          </Typography>)}
+                          {mensagem && emprestimo.status === "emprestado" && (
+                              <Typography variant="body2" color="error">
+                                {mensagem}
+                              </Typography>
+                          )}
+                          {emprestimo.status === "emprestado" &&
+                              podeEstender &&
+                              !emprestimo.extendido && (
+                                  <Button
+                                      variant="contained"
+                                      color="primary"
+                                      sx={{ mt: 2 }}
+                                      onClick={() => handleExtendLoan(emprestimo._id)}
+                                  >
+                                    Estender por mais 15 dias
+                                  </Button>
+                              )}
+                        </CardContent>
+                      </Card>
+                    </Grid2>
+                );
+              })}
+            </Grid2>
+        ) : (
+            <Typography align="center">Nenhum empréstimo encontrado.</Typography>
+        )}
+        {errorMessage && (
+            <Snackbar
+                open={Boolean(errorMessage)}
+                onClose={() => setErrorMessage("")}
+                message={errorMessage}
+                autoHideDuration={6000}
+            />
+        )}
+        {successMessage && (
+            <Snackbar
+                open={Boolean(successMessage)}
+                onClose={() => setSuccessMessage("")}
+                message={successMessage}
+                autoHideDuration={6000}
+            />
         )}
       </Container>
     </div>
