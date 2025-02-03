@@ -288,7 +288,7 @@ const EmprestimoLivro = () => {
               <strong>"{livro.titulo}"</strong>
               <br />
               <br />
-              Data limite para devolução:
+              Data limite para coleta:
             </DialogContentText>
             <Chip
               label={format(dataDevolucao, "dd/MM/yyyy")}
