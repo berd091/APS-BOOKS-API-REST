@@ -5,7 +5,7 @@ import Login from "../pages/Auth/Login";
 import Catalogo from "../pages/Books/Catalogo";
 import DetalhesLivro from "../pages/Books/DetalhesLivro";
 import Usuario from "../pages/user/Usuario";
-import EmprestimoLivro from "../pages/Books/EmprestimoLivro";
+import ReservaLivro from "../pages/Books/ReservaLivro";
 import AddLivro from "../pages/admin/AddLivro";
 import DeleteLivro from "../pages/admin/DeleteLivro";
 import RegistrarDevolucao from "../pages/admin/RegistrarDevolucao";
@@ -23,7 +23,7 @@ const AppRoutes = () => {
         <Route path="/catalogo" element={<Catalogo />} />
         <Route path="/usuario" element={<Usuario />} />{" "}
         <Route path="/livros/:id" element={<DetalhesLivro />} />
-        <Route path="/emprestimo/:id" element={<EmprestimoLivro />} />
+        <Route path="/emprestimo/:id" element={<ReservaLivro />} />
         <Route path="/admin" element={<AddLivro />} />{" "}
         <Route path="/admin2" element={<DeleteLivro />} />
         <Route path="/registro-bibliotecario" element={<RegistroBibliotecario />} />

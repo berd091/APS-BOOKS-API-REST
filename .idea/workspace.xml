@@ -5,7 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8d255d34-eb3d-4d4a-927d-8705906c58f7" name="Changes" comment="Começando a deixar as requisições do jeito REST, e também começando a colocar alguns padrões dentro do código como o factory para criação de usuários e livros">
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/Books/EmprestimoLivro.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/Books/EmprestimoLivro.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/Books/EmprestimoLivro.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/Books/ReservaLivro.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/routes/AppRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/routes/AppRoutes.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,7 +80,7 @@
       <workItem from="1737916145245" duration="4857000" />
       <workItem from="1738027556434" duration="2724000" />
       <workItem from="1738197085337" duration="1755000" />
-      <workItem from="1738543006236" duration="13321000" />
+      <workItem from="1738543006236" duration="13427000" />
     </task>
     <task id="LOCAL-00001" summary="Começando a deixar as requisições do jeito REST, e também começando a colocar alguns padrões dentro do código como o factory para criação de usuários e livros">
       <option name="closed" value="true" />

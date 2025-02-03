@@ -30,7 +30,7 @@ import NavBar from "../../components/navBar/navBar";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
-const EmprestimoLivro = () => {
+const ReservaLivro = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [livro, setLivro] = useState(null);
@@ -336,4 +336,4 @@ const DetailItem = ({ icon, title, value, valueColor }) => (
   </Box>
 );
 
-export default EmprestimoLivro;
+export default ReservaLivro;
