@@ -10,6 +10,9 @@ const emprestimoRoutes = require('./routes/emprestimoRoutes');
 const usuarioRoutes = require('./routes/usuarioRoutes');
 const reservaRoutes = require('./routes/reservaRoutes');
 
+const iniciarCronJob = require('./config/cronReserva');
+const iniciarCronEmprestimo = require('./config/cronEmprestimo');
+
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
@@ -22,6 +25,8 @@ MongoDB.connect()
     app.use('/usuarios', usuarioRoutes);
     app.use('/reservas', reservaRoutes);
 
+    iniciarCronJob();
+    iniciarCronEmprestimo();
     const PORT = process.env.PORT || 3001;
     app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
   })

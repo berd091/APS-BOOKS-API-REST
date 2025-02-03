@@ -264,7 +264,9 @@ const HistoricoEmprestimos = () => {
                                 ? "Cancelado."
                                 : reserva.status === "emprestado"
                                 ? "Emprestimo registrado!"
-                                : "Cancelado pelo bibliotecário."}
+                                : reserva.status === "cancelado bibliotecario"
+                                        ? "Cancelado pelo bibliotecário."
+                                        : "Perdeu o prazo para coletar seu livro!"}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
                         Data da Reserva:{" "}
@@ -401,7 +403,9 @@ const HistoricoEmprestimos = () => {
                             Status:{" "}
                             {emprestimo.status === "emprestado"
                                 ? "Empréstimo Ativo"
-                                : "Devolvido"}
+                                : emprestimo.status === "devolvido"
+                                      ? "Devolvido"
+                                      : "Está atrasado! Devolva o livro o quanto antes!"}
                           </Typography>
                           <Typography variant="body2" color="text.secondary">
                             Data de Empréstimo:{" "}
@@ -411,7 +415,7 @@ const HistoricoEmprestimos = () => {
                                 ).toLocaleDateString()
                                 : "-"}
                           </Typography>
-                          {emprestimo.status === "emprestado" ? (
+                          {emprestimo.status !== "devolvido" ? (
                               <Typography variant="body2" color="text.secondary">
                                 Prazo de Devolução:{" "}
                                 {emprestimo.dataDevolucao
