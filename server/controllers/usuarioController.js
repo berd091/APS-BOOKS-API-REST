@@ -49,9 +49,10 @@ const criarUsuario = async (req, res) => {
         });
 
         const usuarioSalvo = await novoUsuario.save();
-        res.status(201).json({ id: usuarioSalvo.id, name: usuarioSalvo.name, email: usuarioSalvo.email });
+		res.status(201).json({ id: usuarioSalvo.id, name: usuarioSalvo.name, email: usuarioSalvo.email });
+		
     } catch (error) {
-        if (error.code === 11000) {
+		if (error.code === 11000) {
             res.status(400).json({ message: 'Email já cadastrado' });
         } else {
             console.error(error);
