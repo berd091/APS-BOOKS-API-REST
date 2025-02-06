@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { TextField, Button, Container, Typography, Box, IconButton, InputAdornment } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
@@ -14,6 +14,7 @@ const Cadastro = () => {
 		confirmPassword: "",
 	});
 	const [showPassword, setShowPassword] = useState(false);
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [openSnackbar, setOpenSnackbar] = useState(false);
 	const [error, setError] = useState("");
 	const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -26,6 +27,10 @@ const Cadastro = () => {
 
 	const togglePasswordVisibility = () => {
 		setShowPassword(!showPassword);
+	};
+
+	const toggleConfirmPasswordVisibility = () => {
+		setShowConfirmPassword(!showConfirmPassword);
 	};
 
 	const handleCloseSnackbar = (event, reason) => {
@@ -131,7 +136,7 @@ const Cadastro = () => {
 					<TextField
 						label="Confirmar Senha"
 						name="confirmPassword"
-						type={showPassword ? "text" : "password"}
+						type={showConfirmPassword ? "text" : "password"}
 						value={formData.confirmPassword}
 						onChange={handleChange}
 						fullWidth
@@ -145,8 +150,8 @@ const Cadastro = () => {
 						InputProps={{
 							endAdornment: (
 								<InputAdornment position="end">
-									<IconButton onClick={togglePasswordVisibility} edge="end">
-										{showPassword ? <VisibilityOff /> : <Visibility />}
+									<IconButton onClick={toggleConfirmPasswordVisibility} edge="end">
+										{showConfirmPassword ? <VisibilityOff /> : <Visibility />}
 									</IconButton>
 								</InputAdornment>
 							),
@@ -161,6 +166,12 @@ const Cadastro = () => {
 						Cadastrar
 					</Button>
 				</form>
+				<Typography variant="body2" align="center" sx={{ mt: 3 }}>
+					Já possui cadastro?{" "}
+					<Link to="/" style={{ textDecoration: "none", color: "#1976d2" }}>
+						Entre agora!
+					</Link>
+				</Typography>
 				<Snackbar
 					open={openSnackbar}
 					autoHideDuration={2000}
